@@ -63,6 +63,7 @@ class Common(Configuration):
         "django_extensions",
         'foundation',
         'floppyforms',
+        'taggit',
 
         'volunteers',
 

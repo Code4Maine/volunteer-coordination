@@ -6,10 +6,13 @@ from django_extensions.db.models import (TitleSlugDescriptionModel,
                                          TimeStampedModel)
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import GEOSGeometry
+from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
 from .utils import get_lat_long
 
 
-class Location(TimeStampedModel, TitleSlugDescriptionModel):
+class Location(TimeStampedModel):
+    slug = models.SlugField(_('slug'))
     address = models.CharField(_('address'),
                                max_length=255, blank=True, null=True)
     city = models.CharField(_('city'), max_length=100, blank=True, null=True)
@@ -59,6 +62,9 @@ class Organization(TimeStampedModel, TitleSlugDescriptionModel):
     def get_absolute_url(self):
         return ('organization-detail', None, {'slug': self.slug})
 
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
+
 
 class LaborType(TitleSlugDescriptionModel):
     pass
@@ -66,6 +72,9 @@ class LaborType(TitleSlugDescriptionModel):
     @permalink
     def get_absolute_url(self):
         return ('task-type', None, {'slug': self.slug})
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
 
 
 class Task(TimeStampedModel, TitleSlugDescriptionModel):
@@ -75,6 +84,8 @@ class Task(TimeStampedModel, TitleSlugDescriptionModel):
     organization = models.ForeignKey(Organization, related_name='organization')
     labor_type = models.ForeignKey(LaborType, blank=True, null=True)
 
+    requirements = TaggableManager()
+
     objects = gis_models.GeoManager()
 
     @permalink
@@ -83,6 +94,9 @@ class Task(TimeStampedModel, TitleSlugDescriptionModel):
             'artifact-detail',
             None,
             {'organization-slug': self.organization.slug, 'slug': self.slug})
+
+    def __unicode__(self):
+        return u'{0} for {1}'.format(self.title, self.organization)
 
     @property
     def location(self):

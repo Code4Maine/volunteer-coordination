@@ -14,7 +14,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 
-from .models import Organization, Tour, Task
+from .models import Organization, Task
 
 
 def get_nearby_tasks(request, *args, **kwargs):
@@ -61,7 +61,7 @@ class TaskListView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         return Task.objects.filter(
-            organization-_slug=self.kwargs['organization-slug'])
+            organization_slug=self.kwargs['organization-slug'])
 
 
 class CreateTaskView(CreateView):
