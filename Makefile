@@ -19,3 +19,6 @@ rename:
 	mv outline/manage_outline.py outline/manage_$(name).py
 	mv outline $(name)
 	echo "Great, you're all set! Well, you'll probably want to adjust the setup file by hand a bit."
+
+reqs:
+	venv/bin/pip install -r requirements.txt

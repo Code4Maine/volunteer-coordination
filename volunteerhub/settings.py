@@ -52,6 +52,7 @@ class Common(Configuration):
         "django.contrib.sites",
         "django.contrib.sitemaps",
         "django.contrib.staticfiles",
+        'django.contrib.gis',
 
         'custom_user',
         'allauth',
@@ -62,6 +63,8 @@ class Common(Configuration):
         "django_extensions",
         'foundation',
         'floppyforms',
+
+        'volunteers',
 
     )
 
@@ -189,9 +192,8 @@ class Dev(Common):
     """
     DEBUG = TEMPLATE_DEBUG = True
 
-    DATABASES = values.DatabaseURLValue('sqlite:///{0}'.format(
-        os.path.join(Common.BASE_DIR, 'db.sqlite3'),
-        environ=True))
+    DATABASES = values.DatabaseURLValue(
+        'postgis://localhost/vhub')
 
     SECRET_KEY = 'notasecretatall'
 

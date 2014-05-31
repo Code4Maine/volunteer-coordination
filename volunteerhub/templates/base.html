@@ -50,13 +50,13 @@
         {% if request.user.is_authenticated %}
           <li class="divider"></li>
           <li class="">
-          <a href="{% url 'teammate-home' %}"><i class="fa fa-home"></i>&nbsp;Home</a>
+          <a href="{ url 'home' %}"><i class="fa fa-home"></i>&nbsp;Home</a>
           </li>
           <li class="divider"></li>
           <li class="has-dropdown"><a href="#">Manage</a>
             <ul class="dropdown">
-                <li><a href="{% url 'week-create' %}">Add week</a></li>
-                <li><a href="{% url 'week-list' %}">View plans</a></li>
+                <li><a href="{ url 'week-create' %}">Add week</a></li>
+                <li><a href="{ url 'week-list' %}">View plans</a></li>
               <li class="divider"></li>
               <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
             </ul>
