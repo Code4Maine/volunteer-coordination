@@ -7,8 +7,8 @@ from django_extensions.db.models import (TitleSlugDescriptionModel,
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import GEOSGeometry
 from taggit.managers import TaggableManager
-from taggit.models import TaggedItemBase
 from .utils import get_lat_long
+from django.auth.user.models import User
 
 
 class Location(TimeStampedModel):
@@ -77,7 +77,20 @@ class LaborType(TitleSlugDescriptionModel):
         return u'{0}'.format(self.title)
 
 
+class Project(TimeStampedModel, TitleSlugDescriptionModel):
+    lead_volunteer = models.ForeignKey(User)
+    image = models.ImageField()
+
+    @permalink
+    def get_absolute_url(self):
+        return ('project-detail', None, {'slug': self.slug})
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
+
+
 class Task(TimeStampedModel, TitleSlugDescriptionModel):
+    project = models.ForeignKey(Project)
     location = models.ForeignKey(Location, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)

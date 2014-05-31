@@ -14,7 +14,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 
-from .models import Organization, Task
+from .models import Organization, Task, Project
 
 
 def get_nearby_tasks(request, *args, **kwargs):
@@ -46,6 +46,10 @@ class OrganizationListView(ListView):
 
 class OrganizationDetailView(DetailView):
     model = Organization
+
+
+class ProjectDetailView(DetailView):
+    model = Project
 
 
 class TaskDetailView(DetailView):
