@@ -2,6 +2,9 @@ VolunteerHub
 ============
 
 Application for coordinating volunteers & projects for an organization.
+Organizations create a profile and add tasks with dates and time. Users
+search through available tasks and can select and assign themselves to 
+tasks that they are qualified for.
 
 Easy bootstrapping!
 -------------------
