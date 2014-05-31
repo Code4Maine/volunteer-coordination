@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block title %}{{object.organization}}{% endblock %}
+
+{% block main %}
+<h3>{{object}}</h3>
+<img src="{{object.image.url}}" width=300 style="float:right; margin-left:1em;" />
+<p>{{object.description}}</p>
+<p>Architect: {{object.architect}}</p>
+<p>Built: {{object.built}}</p>
+{% if object.location %}
+<p>Address: {{object.locations.all.0}}</p>
+{% else %}
+<p>Addresses: {% for loc in object.locations.all %}{{loc}}{% if not forloop.last %}, {% endif %}{% endfor %}
+{% endif %}
+<p>
+              <div class="map" id="map" style="width:640px; height:400px;">
+{% if object.location %}
+             <img src="http://maps.googleapis.com/maps/api/staticmap?center={{object.location.lat_long}}&zoom=18&size=640x400&sensor=false&maptype=satellite" />
+{% else %}
+{% for loc in object.locations.all %}
+             <img src="http://maps.googleapis.com/maps/api/staticmap?center={{loc.lat_long}}&zoom=18&size=640x400&sensor=false&maptype=satellite" />
+{% endfor %}
+{% endif %}
+              </div>
+
+</p>
+
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% load thumbnail %}
+
+{% for object in object_list %}
+<div class="artifact-box" id="artifact-{{object.id}}">
+    <h3><a href="{{object.get_absolute_url}}">{{object.title}}</a></h3>
+    <div class="artifact-box-info">
+	    {% thumbnail object.image 250x200 as image %}
+	    <p><img src="{{image}}" /></p>
+	    {% endthumbnail %}
+	    <p>{{object.lat_long}}</p>
+	    <p>{{object.description|truncatewords:"50"}}</p>
+	    <p><a href="{{object.get_absolute_url}}">Learn more &raquo;</a></p>
+    </div>
+</div>
+{% endfor %}

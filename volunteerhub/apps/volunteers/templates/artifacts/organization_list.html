@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% trans "Organizations" %}{% endblock %}
+{% block title %}{% trans "Organizations" %}{% endblock %}
+
+{% block breadcrumb_menu %}
+<li class="active">{% trans "Organizations" %}</li>
+{% endblock %}
+
+{% block main %}
+{% blocktrans %}
+<h2>Participating organizations</h2>
+{% endblocktrans %}
+{% for org in object_list %}
+<div class="org">
+  <h4>{{org.title}}</h4>
+  <p><a href="{{org.website}}">{{org.website}}</a></p>
+  <p><a class="btn" href="{{org.get_absolute_url}}">View collections & tours</a></p>
+</div>
+<hr />
+{% endfor %}
+
+<ul>
+    <li><a class="button" href="{% url 'whats_here' %}">What's here?</a></li>
+</ul>
+{% endblock %}

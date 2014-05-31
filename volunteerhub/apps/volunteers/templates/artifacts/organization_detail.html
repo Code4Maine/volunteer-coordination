@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}{{object}}{% endblock %}
+
+{% block main %}
+<h3>Artifacts</h3>
+<ul>
+{% for art in object.artifact_set.all %}
+<li><a href="{{ art.get_absolute_url }}">{{art}}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

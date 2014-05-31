@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}What's Here?!{% endblock %}
+
+{% block main %}
+<ul id="results"></ul>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <article>
+    <p><span id="status">Please wait, as we search for history around you.<br /><img style="padding:10px;" src="http://s3.amazonaws.com/findhistory_me/images/spinner.gif" %}" /></span></p>
+    </article>
+
+<script>
+function success(position) {
+  // On success, hit up the lookup url with the coordinates and
+  // let's get back some json data with artifacts near here.
+  var s = document.querySelector('#status');
+  var max_length = 7
+  lat = position.coords.latitude.toString().replace('.','').substring(0,max_length);
+  lng = position.coords.longitude.toString().replace('.','').substring(0,max_length);
+  
+  
+  if (s.className == 'success') {
+    // not sure why we're hitting this twice in FF, I think it's to do with a cached result coming back    
+    return;
+  }
+  
+  s.innerHTML = "We think you're within " + position.coords.accuracy + " meters of here.";
+  s.className = 'success';
+  
+  var mapcanvas = document.createElement('div');
+  mapcanvas.id = 'mapcanvas';
+  mapcanvas.style.height = '300px';
+  mapcanvas.style.width = '300px';
+    
+  document.querySelector('article').appendChild(mapcanvas);
+  
+  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var myOptions = {
+    zoom: 14,
+    center: latlng,
+    mapTypeControl: false,
+    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+  
+  var marker = new google.maps.Marker({
+      position: latlng, 
+      map: map, 
+      title:"You are here! (at least within a "+position.coords.accuracy+" meter radius)"
+  });
+
+  $.ajax({
+	  url: "{% url 'whats_here' %}"+lat+"/"+lng,
+	  cache: false,
+	  success: function(html){
+		console.log(html)
+                $("#results").append(html);
+          }
+  });
+}
+
+function error(msg) {
+  var s = document.querySelector('#status');
+  s.innerHTML = typeof msg == 'string' ? msg : "failed";
+  s.className = 'fail';
+  
+  // console.log(arguments);
+}
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success, error);
+} else {
+  error('not supported');
+}
+</script>
+{% endblock %}
+

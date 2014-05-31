@@ -1,0 +1,4 @@
+include README.md
+recursive-include volunteerhub/static *
+recursive-include volunteerhub/templates *
+recursive-include volunteerhub/apps *
