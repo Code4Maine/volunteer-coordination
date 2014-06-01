@@ -1,10 +1,29 @@
 {% extends "base.html" %}
+{% load volunteer_tags %}
 
 
 {% block content %}
 
+<h2>My organizations</h2>
+{% for org in request.user.organization_set.all %}
+{% manager_of org user as manager %}
+{% if manager %}
+<div>
+    <h4>{{org.title}}</h4>
+    {% if org.image %}<img src={{org.image}}" />{% endif %}
+    {% for project in org.projects.all %}
+    {% if not project.fulfilled %}
+    <p><a href="{{project.get_absolute_url}}">{{project.title}}</a></p>
+    {% endif %}
+    {% endfor %}
+    <a class="button" href="#"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Add a new project</a>
+</div>
+{% endif %}
+{% endfor %}
+<hr />
+
 {% if applications %}
-<h2>Application status</h2>
+<h2>My application status</h2>
 {% for app in applications %}
 
 <div class="app-box">

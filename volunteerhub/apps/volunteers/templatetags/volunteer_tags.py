@@ -1,6 +1,6 @@
 from django.template.base import Library
 
-from volunteers.models import VolunteerApplication
+from volunteers.models import VolunteerApplication, Organization
 
 register = Library()
 
@@ -16,3 +16,12 @@ def application_status(context, opp, user):
         return app.status
     else:
         return None
+
+
+@register.assignment_tag(takes_context=True)
+def manager_of(context, org, user):
+    organization = Organization.objects.get(slug=org.slug, managers=user)
+    if organization:
+        return True
+    else:
+        return False

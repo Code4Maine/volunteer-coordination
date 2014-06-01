@@ -90,7 +90,7 @@ class Project(TimeStampedModel, TitleSlugDescriptionModel):
     lead_volunteers = models.ManyToManyField(get_user_model(),
                                              blank=True,
                                              null=True)
-    organization = models.ForeignKey(Organization, related_name='organization')
+    organization = models.ForeignKey(Organization, related_name='projects')
     image = models.ImageField(upload_to="project_images",
                               blank=True,
                               null=True)
