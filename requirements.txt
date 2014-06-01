@@ -15,6 +15,7 @@ django-zurb-foundation==5.1.1
 django-floppyforms==1.1.1
 django-custom-user==0.4
 django-localflavor==1.0
+django-taggit==0.12
 south==0.8.2
 
 boto==2.9.5
