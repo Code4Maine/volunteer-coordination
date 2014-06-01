@@ -20,4 +20,22 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/volunteerhub_logo" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:text="Volunteer" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:text="Login" />
+
 </RelativeLayout>
