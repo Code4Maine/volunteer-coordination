@@ -2,11 +2,20 @@ from django.conf.urls import patterns, url
 from .views import (OpportunityDetailView, ProjectListView,
                     ProjectDetailView, ProjectListJSONView,
                     ProjectDetailJSONView, OpportunityDetailJSONView,
-                    DashboardView, ProfileUpdateView)
+                    DashboardView, ProfileUpdateView,
+                    OpportunityVolunteerView, OpportunityUnVolunteerView)
 
 # custom views
 urlpatterns = patterns(
     '',
+    url(r'^projects/(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+)/unvolunteer/',
+        view=OpportunityUnVolunteerView.as_view(),
+        name="opportunity-unvolunteer"),
+
+    url(r'^projects/(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+)/volunteer/',
+        view=OpportunityVolunteerView.as_view(),
+        name="opportunity-volunteer"),
+
     url(r'^projects/(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+).json',
         view=OpportunityDetailJSONView.as_view(),
         name="opportunity-detail-json"),

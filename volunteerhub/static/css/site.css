@@ -1,1 +1,2 @@
 #logo { margin:1em 0 1em 0; text-indent:-9999px; height:155px; width:450px;  background: url('/static/img/volunteerhub_logo.png');}
+.app-box { border:1px solid #eee; padding:1em; margin:5px; float:left; width:260px; height:180px; }

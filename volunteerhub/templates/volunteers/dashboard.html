@@ -3,10 +3,20 @@
 
 {% block content %}
 
-{% if user.is_lead %}
-<h2>Your projects</h2>
+{% if applications %}
+<h2>Application status</h2>
+{% for app in applications %}
+
+<div class="app-box">
+  <h4><a href="{{app.opportunity.get_absolute_url}}">{{app.opportunity.title}}</a></h4>
+  <p>{{app.opportunity.project.organization}}</p>
+  <a href="#" class="button disabled">Application {{app.get_status_display}}</a>
+</div>
+
+{% endfor %}
 
 {% endif %}
+<hr />
 
 <h2>Profile</h2>
 
