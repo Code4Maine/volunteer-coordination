@@ -65,7 +65,8 @@ class Common(Configuration):
         'floppyforms',
         'taggit',
 
-        #'projects',
+        'projects',
+        'volunteers',
 
     )
 
@@ -195,7 +196,7 @@ class Dev(Common):
     DEBUG = TEMPLATE_DEBUG = True
 
     DATABASES = values.DatabaseURLValue(
-        'postgis://vhub:mainroot@localhost/vhub')
+        'postgis://localhost/vhub')
 
     SECRET_KEY = 'notasecretatall'
 
