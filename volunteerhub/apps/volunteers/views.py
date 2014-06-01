@@ -82,6 +82,42 @@ class ProjectListView(JsonView, ListView):
 
 class OpportunityVolunteerView(View):
     '''
+    Takes a get request to a URL with a volunteer and an 
+    and adds the user to the opportunities candidate list.
+    '''
+
+    def get(self, request, *args, **kwargs):
+        # TODO:
+        # 1. Grab user from request
+        user = request.user
+        # 2. Check that they can apply to the opportunity in the url
+        qs = Opportunity.open_objects.all()
+        try:
+            slug = kwargs['slug']
+            project_slug = kwargs['project_slug']
+        except AttributeError:
+            slug = project_slug = None
+
+        opp = get_object_or_404(qs, slug=slug, project__slug=project_slug)
+        # 3. If so, add a VolunteerApplication
+        try:
+            application = VolunteerApplication.objects.get(user=user,
+                                                           opportunity=opp)
+        except VolunteerApplication.DoesNotExist:
+            application = None
+        if not application:
+        
+            application = VolunteerApplication.objects.create(user=user,
+                                                              opportunity=opp)
+            application.save()
+        # 4. Notify the lead volunteers and managers of the project and org
+        return redirect(reverse('opportunity-detail', kwargs={
+            'slug': slug,
+            'project_slug': project_slug}))
+
+
+class OpportunityUnVolunteerView(View):
+    '''
     Takes a posted form with a volunteer and an OpportunityDetailJSONView
     and adds the user to the opportunities candidate list.
     '''
@@ -100,11 +136,15 @@ class OpportunityVolunteerView(View):
 
         opp = get_object_or_404(qs, slug=slug, project__slug=project_slug)
         # 3. If so, add a VolunteerApplication
-        application = VolunteerApplication.objects.create(user=user,
-                                                          opportunity=opp)
-        application.save()
-        # 4. Notify the lead volunteers and managers of the project and org
-        return redirect(reverse('opportunity-detail', {'slug':slug, 'project_slug':project_slug}))
+        try:
+            application = VolunteerApplication.objects.get(user=user,
+                                                           opportunity=opp)
+            application.delete()
+        except VolunteerApplication.DoesNotExist:
+            application = None
+        return redirect(reverse('opportunity-detail', kwargs={
+            'slug': slug,
+            'project_slug': project_slug}))
 
 
 class OpportunityDetailJSONView(JsonView, DetailView):
@@ -150,6 +190,12 @@ class DashboardView(DetailView):
 
     def get_object(self, *args, **kwargs):
         return self.request.user
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DashboardView, self).get_context_data(*args, **kwargs)
+        context['applications'] = VolunteerApplication.objects.filter(
+            user=self.request.user)
+        return context
 
 
 class ProfileUpdateView(UpdateView):

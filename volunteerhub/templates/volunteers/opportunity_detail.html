@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load volunteer_tags %}
 
 
 {% block content %}
@@ -8,5 +9,20 @@
 
 <p>{{object.description}}</p>
 
-<button href="{% url 'opportunity-volunteer' object.project.slug object.slug %}">Volunteer</button>
+{% application_status object user as status%}
+
+{% if status == 'pending' %}
+<a class="button disabled">Application Pending</a>
+<a class="button" href="{% url 'opportunity-unvolunteer' object.project.slug object.slug %}">Retract Application</a>
+{% else %}
+{% if status == 'denied' %}
+<a class="button alert disabled">Application Denied</a>
+{% else %}
+{% if status == 'approved' %}
+<a class="button success disabled">Application Approved</a>
+{% else %}
+<a class="button" href="{% url 'opportunity-volunteer' object.project.slug object.slug %}">Volunteer</a>
+{% endif %}
+{% endif %}
+{% endif %}
 {% endblock %}

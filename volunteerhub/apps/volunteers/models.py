@@ -143,7 +143,7 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
 class Volunteer(TimeStampedModel):
     '''
     '''
-    name = models.TextField(_('Name'), max_length=255)
+    name = models.CharField(_('Name'), max_length=255)
     phone_number = PhoneNumberField(blank=True, null=True)
     address = models.CharField(blank=True, null=True,
                                max_length=255)
@@ -160,15 +160,21 @@ class Volunteer(TimeStampedModel):
         else:
             return False
 
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+
 APP_STATUSES = (('pending', 'Pending'),
                 ('approved', 'Approved'),
                 ('denied', 'Denied'))
+
 
 def create_volunteer_profile(sender, instance, created, **kwargs):
     if created:
         Volunteer.objects.create(user=instance)
 
 post_save.connect(create_volunteer_profile, sender=get_user_model())
+
 
 class VolunteerApplication(TimeStampedModel):
 
@@ -178,3 +184,6 @@ class VolunteerApplication(TimeStampedModel):
                               choices=APP_STATUSES,
                               default='pending',
                               max_length=15)
+
+    def __unicode__(self):
+        return u'Application for {0}: {1}'.format(self.opportunity, self.user)
