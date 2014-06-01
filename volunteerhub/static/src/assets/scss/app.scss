@@ -37,4 +37,40 @@
 //   "foundation/components/top-bar",
 //   "foundation/components/type",
 //   "foundation/components/offcanvas",
+<<<<<<< Updated upstream
 //   "foundation/components/visibility";
+=======
+//   "foundation/components/visibility";
+
+/* Extra customization starts here! */
+
+.top-bar {
+	.name { 
+		h1 {
+			a {
+				background: url(../../img/volunteerhub_logo_2x.png) 20px 0 no-repeat;
+				background-size: contain;
+				overflow: hidden;
+				white-space: nowrap;
+				text-indent: 200%;
+				width: 190px;
+			}
+		}
+	}
+}
+
+#logo { 
+	margin:1em auto; 
+	text-indent:-9999px; 
+	min-height: 150px;
+	width: auto;
+	max-width: 450px;
+	background: url(../../img/volunteerhub_logo.png) 50% 0 no-repeat;
+	background-size: contain;
+}
+
+.home-intro {
+	background: url(../../img/volunteer-home-photo.jpg) 50% 0 no-repeat;
+	background-size: cover;
+}
+>>>>>>> Stashed changes
