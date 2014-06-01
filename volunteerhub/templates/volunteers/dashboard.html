@@ -4,22 +4,13 @@
 
 {% block content %}
 <div class="row">
-<div class="large-12 columns">
+<div class="large-6 columns">
 
-<h2>My projects</h2>
 {% for org in request.user.organization_set.all %}
+{% if forloop.first %}
 {% manager_of org user as manager %}
 {% if manager %}
-{% for project in org.projects.all %}
-{% if not project.fulfilled %}
-<p><a href="{{project.get_absolute_url}}">{{project.title}}</a>&nbsp;<span class="label">{{org.title}}</span></p>
-{% endif %}
-{% endfor %}
-{% endif %}
-{% if forloop.last%}
-<p><a class="button" href="{% url 'project-create' org.slug %}"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Add a new project</a></p>
-<hr />
-<h2>Applications waiting for review</h2>
+<h2>Waiting for review</h2>
 {% for opp in org.opportunity_set.all %}
 {% for app in opp.volunteerapplication_set.all %}
 {% if app.status == 'pending' %}
@@ -29,24 +20,48 @@
 {% endfor %}
 
 {% endif %}
+{% else %}
+<p>No applications waiting for review</p>
+{% endif %}
 {% endfor %}
+<hr />
 
 
 
 {% if applications %}
-<h2>My application status</h2>
+<h2>My applications</h2>
 {% for app in applications %}
-
 <div class="app-box">
   <h4><a href="{{app.opportunity.get_absolute_url}}">{{app.opportunity.title}}</a></h4>
   <p>{{app.opportunity.project.organization}}</p>
   <a href="#" class="button disabled">Application {{app.get_status_display}}</a>
 </div>
-
+<hr />
 {% endfor %}
-
+{% else %}
+<p>No open applications</p>
 <hr />
 {% endif %}
+
+</div>
+<div class="large-6 columns">
+
+<h2>My projects</h2>
+{% for org in request.user.organization_set.all %}
+{% manager_of org user as manager %}
+{% if manager %}
+{% for project in org.projects.all %}
+{% if not project.fulfilled %}
+<span class="label">{{org.title}}</span>
+<p><a href="{{project.get_absolute_url}}">{{project.title}}</a></p>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if forloop.last%}
+<p><a class="button" href="{% url 'project-create' org.slug %}"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Add a new project</a></p>
+<hr />
+{% endif %}
+{% endfor %}
 
 <h2>Profile</h2>
 
