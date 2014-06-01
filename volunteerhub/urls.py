@@ -9,10 +9,11 @@ urlpatterns = patterns(
     '',
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('allauth.urls')),
-    (r'^projects/', include('projects.urls')),
     url("^$",
         TemplateView.as_view(template_name='homepage.html'),
         name="homepage"),
+    (r'^', include('projects.urls')),
+    (r'^', include('roles.urls')),
 )
 
 if settings.DEBUG:

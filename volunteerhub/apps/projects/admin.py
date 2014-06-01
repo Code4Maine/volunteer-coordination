@@ -1,9 +1,12 @@
 from django.contrib import admin
 
-from .models import (Organization, LaborType, Task, Location)
+from .models import (Organization, LaborType, Opportunity, Location,
+                     Project)
+
 
 class SlugAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
+
 
 class LocationAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("address", "city", "state",)}
@@ -12,5 +15,6 @@ class LocationAdmin(admin.ModelAdmin):
 
 admin.site.register(Location, LocationAdmin)
 admin.site.register(LaborType)
-admin.site.register(Task)
+admin.site.register(Opportunity)
 admin.site.register(Organization)
+admin.site.register(Project)

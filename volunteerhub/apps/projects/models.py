@@ -70,7 +70,7 @@ class LaborType(TitleSlugDescriptionModel):
 
     @permalink
     def get_absolute_url(self):
-        return ('task-type', None, {'slug': self.slug})
+        return ('opportunity-type', None, {'slug': self.slug})
 
     def __unicode__(self):
         return u'{0}'.format(self.title)
@@ -88,7 +88,7 @@ class Project(TimeStampedModel, TitleSlugDescriptionModel):
         return u'{0}'.format(self.title)
 
 
-class Task(TimeStampedModel, TitleSlugDescriptionModel):
+class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
     project = models.ForeignKey(Project)
     location = models.ForeignKey(Location, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
@@ -103,9 +103,9 @@ class Task(TimeStampedModel, TitleSlugDescriptionModel):
     @permalink
     def get_absolute_url(self):
         return (
-            'artifact-detail',
+            'opportunity-detail',
             None,
-            {'organization-slug': self.organization.slug, 'slug': self.slug})
+            {'project_slug': self.project.slug, 'slug': self.slug})
 
     def __unicode__(self):
         return u'{0} for {1}'.format(self.title, self.organization)

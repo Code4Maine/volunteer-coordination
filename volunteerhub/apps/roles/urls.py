@@ -1,14 +1,10 @@
 from django.conf.urls import patterns, url
-from .views import (OrganizationDetailView, OrganizationListView)
+from .views import DashboardView
 
 # custom views
 urlpatterns = patterns(
     '',
-    url(r'^(?P<slug>[-\w]+)/',
-        view=OrganizationDetailView.as_view(),
-        name="organization-detail"),
-
-    url(r'^$',
-        view=OrganizationListView.as_view(),
-        name="organization-list"),
+    url(r'dashboard/',
+        view=DashboardView.as_view(),
+        name="dashboard"),
 )

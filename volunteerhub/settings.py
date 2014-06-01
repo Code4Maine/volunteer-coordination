@@ -30,6 +30,10 @@ class Common(Configuration):
 
     USE_SOUTH = True
 
+    SOUTH_MIGRATION_MODULES = {
+        'taggit': 'taggit.south_migrations',
+    }
+
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -64,9 +68,11 @@ class Common(Configuration):
         'foundation',
         'floppyforms',
         'taggit',
+        'south',
+        'braces',
 
         'projects',
-        'volunteers',
+        'roles',
 
     )
 

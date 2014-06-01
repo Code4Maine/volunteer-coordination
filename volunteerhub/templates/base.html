@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% block meta %}{% endblock meta %}
     {% block base_title %}
-    <title>{% block title %}Foundation 5.0.3{% endblock title %}</title>
+    <title>{% block title %}VolunteerHub{% endblock title %}</title>
     {% endblock base_title %}
 
     {# Base Foundation CSS #}
@@ -37,7 +37,7 @@
         <li class="name">
           <h1>
             <a href="#">
-             Outline
+             VolunteerHub
             </a>
           </h1>
         </li>
@@ -50,23 +50,27 @@
         {% if request.user.is_authenticated %}
           <li class="divider"></li>
           <li class="">
-          <a href="{ url 'home' %}"><i class="fa fa-home"></i>&nbsp;Home</a>
+          <a href="{% url 'dashboard' %}"><i class="fa fa-home"></i>&nbsp;Dashboard</a>
+          </li>
+          <li class="">
+          <a href="{ url 'home' %}"><i class="fa "></i>&nbsp;Opportunities</a>
           </li>
           <li class="divider"></li>
+          {% if request.user.is_manager %}
           <li class="has-dropdown"><a href="#">Manage</a>
             <ul class="dropdown">
-                <li><a href="{ url 'week-create' %}">Add week</a></li>
+                <li><a href="{ url 'opportunity-create' %}">Add opportunity</a></li>
                 <li><a href="{ url 'week-list' %}">View plans</a></li>
               <li class="divider"></li>
               <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
             </ul>
           </li>
+          {% endif %}
           <li class="divider"></li>
           <li class="has-dropdown">
             <a href="#"><i class="fa fa-gears"></i>&nbsp;{{request.user.name}}</a>
             <ul class="dropdown">
               <li><a href="">Edit profile</a></li>
-              <li><a href="">My week</a></li>
               <li class="divider"></li>
               <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
             </ul>

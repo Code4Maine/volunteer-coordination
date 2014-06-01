@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h2>{{object}}</h2>
+<p>{{object.description}}</p>
+<ul>
+    {% for obj in object.opportunity_set.all %}
+    <li><a href="{{ obj.get_absolute_url }}">{{obj}}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

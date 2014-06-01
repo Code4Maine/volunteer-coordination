@@ -1,23 +1,32 @@
 from django.conf.urls import patterns, url
-from .views import (OrganizationDetailView, OrganizationListView,
-                    TaskDetailView, TaskListView)
+from .views import (OpportunityDetailView, ProjectListView,
+                    ProjectDetailView, ProjectListJSONView,
+                    ProjectDetailJSONView, OpportunityDetailJSONView)
 
 # custom views
 urlpatterns = patterns(
     '',
-    url(r'^(?P<organization_slug>[-\w]+)/tasks/(?P<slug>[-\w]+)/',
-        view=TaskDetailView.as_view(),
-        name="task-detail"),
+    url(r'^(?P<slug>[-\w]+)/$',
+        view=ProjectListView.as_view(),
+        name="project-list"),
 
-    url(r'^(?P<organization_slug>[-\w]+)/tasks/',
-        view=TaskListView.as_view(),
-        name="task-list"),
+    url(r'^(?P<slug>[-\w]+)/json$',
+        view=ProjectListJSONView.as_view(),
+        name="project-list-json"),
 
-    url(r'^(?P<slug>[-\w]+)/',
-        view=OrganizationDetailView.as_view(),
-        name="organization-detail"),
+    url(r'^(?P<slug>[-\w]+)/opportunities/$',
+        view=ProjectDetailView.as_view(),
+        name="project-detail"),
 
-    url(r'^$',
-        view=OrganizationListView.as_view(),
-        name="organization-list"),
+    url(r'^(?P<slug>[-\w]+)/opportunities/json$',
+        view=ProjectDetailJSONView.as_view(),
+        name="project-detail-json"),
+
+    url(r'^(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+)/$',
+        view=OpportunityDetailView.as_view(),
+        name="opportunity-detail"),
+
+    url(r'^(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+)/json$',
+        view=OpportunityDetailJSONView.as_view(),
+        name="opportunity-detail-json"),
 )
