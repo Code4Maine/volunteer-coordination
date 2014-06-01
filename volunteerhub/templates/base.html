@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% block meta %}{% endblock meta %}
     {% block base_title %}
-    <title>{% block title %}Foundation 5.0.3{% endblock title %}</title>
+    <title>{% block title %}VolunteerHub{% endblock title %}</title>
     {% endblock base_title %}
 
     {# Base Foundation CSS #}
@@ -20,6 +20,7 @@
     
     {# Custom CSS #}
     {% block css %}{% endblock css %}
+    <link rel="stylesheet" href="/static/css/site.css"/>
 
     {# Override if you need another version of modernizr #}
     {% block foundation_modernizer %}
@@ -31,53 +32,56 @@
 </head>
 <body {% block body_attr %}{% endblock body_attr %}>
     {% block base_header %}
-    <nav class="top-bar" data-topbar>
-      <ul class="title-area">
-        <!-- Title Area -->
-        <li class="name">
-          <h1>
-            <a href="#">
-             Outline
-            </a>
-          </h1>
-        </li>
-        <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
-      </ul>
-   
-      <section class="top-bar-section">
-        <!-- Right Nav Section -->
-        <ul class="right">
-        {% if request.user.is_authenticated %}
-          <li class="divider"></li>
-          <li class="">
-          <a href="{ url 'home' %}"><i class="fa fa-home"></i>&nbsp;Home</a>
+    <div class="fixed">
+      <nav class="top-bar" data-topbar>
+        <ul class="title-area">
+          <!-- Title Area -->
+          <li class="name">
+            <h1>
+              <a href="/">
+               VolunteerHub
+              </a>
+            </h1>
           </li>
-          <li class="divider"></li>
-          <li class="has-dropdown"><a href="#">Manage</a>
-            <ul class="dropdown">
-                <li><a href="{ url 'week-create' %}">Add week</a></li>
-                <li><a href="{ url 'week-list' %}">View plans</a></li>
-              <li class="divider"></li>
-              <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
-            </ul>
-          </li>
-          <li class="divider"></li>
-          <li class="has-dropdown">
-            <a href="#"><i class="fa fa-gears"></i>&nbsp;{{request.user.name}}</a>
-            <ul class="dropdown">
-              <li><a href="">Edit profile</a></li>
-              <li><a href="">My week</a></li>
-              <li class="divider"></li>
-              <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
-            </ul>
-          </li>
-        {% else %}
-        <li class=""><a href="{% url 'account_signup' %}">Sign up</a></li>
-        <li class=""><a href="{% url 'account_login' %}">Log in</a></li>
-        {% endif %}
+          <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
         </ul>
-      </section>
-    </nav>
+     
+        <section class="top-bar-section">
+          <!-- Right Nav Section -->
+          <ul class="right">
+          {% if request.user.is_authenticated %}
+            <li class="divider"></li>
+            <li class="">
+            <a href="{% url 'dashboard' %}"><i class="fa fa-home"></i>&nbsp;Dashboard</a>
+            </li>
+            <li class="divider"></li>
+            {% if request.user.is_manager %}
+            <li class="has-dropdown"><a href="#">Manage</a>
+              <ul class="dropdown">
+                  <li><a href="{ url 'opportunity-create' %}">Add opportunity</a></li>
+                  <li><a href="{ url 'week-list' %}">View plans</a></li>
+                <li class="divider"></li>
+                <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <li class="divider"></li>
+            <li class="has-dropdown">
+              <a href="#"><i class="fa fa-gears"></i>&nbsp;{{request.user}}</a>
+              <ul class="dropdown">
+                <li><a href="{% url 'profile-update' %}">Edit profile</a></li>
+                <li class="divider"></li>
+                <li><a data-reveal-ajax="true" data-reveal-id="myModal" href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
+              </ul>
+            </li>
+          {% else %}
+          <li class=""><a data-reveal-ajax="true" href="{% url 'account_signup' %}">Sign up</a></li>
+          <li class=""><a href="{% url 'account_login' %}">Log in</a></li>
+          {% endif %}
+          </ul>
+        </section>
+      </nav>
+    </div>
 
     {% endblock %}
 
@@ -94,6 +98,7 @@
     {# Foundation JS #}
     {% block foundation_js %}
     {% foundation_js %}
+    {% foundation_js 'reveal' %}
     {% endblock foundation_js %}
 
     {# Custom JS #}

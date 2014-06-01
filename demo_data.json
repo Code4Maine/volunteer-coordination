@@ -1,0 +1,141 @@
+[
+{
+    "pk": 1, 
+    "model": "custom_user.emailuser", 
+    "fields": {
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-06-01T10:35:36.171Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$5xEOcOfTRcj6$2DpWerS98tHSdIknsgKqgJAFWgOZUSAVBPXaDv1p0cI=", 
+        "email": "colin@onec.me", 
+        "date_joined": "2014-06-01T10:35:35.880Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "custom_user.emailuser", 
+    "fields": {
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2014-06-01T11:22:21.037Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$lByRHmAnSBBo$sqYoDJUU8a7wmj48hZSLH+Ci9/HFWqNCi5LDb+f8k38=", 
+        "email": "admin@volunteerhub.me", 
+        "date_joined": "2014-06-01T11:22:05.006Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "volunteers.organization", 
+    "fields": {
+        "website": "", 
+        "managers": [
+            2
+        ], 
+        "description": "", 
+        "title": "Habitat for Humanity - Hancock County", 
+        "created": "2014-06-01T11:26:16.452Z", 
+        "modified": "2014-06-01T11:26:16.461Z", 
+        "phone": "", 
+        "slug": "habitat-for-humanity-hancock-county"
+    }
+},
+{
+    "pk": 2, 
+    "model": "volunteers.organization", 
+    "fields": {
+        "website": "http://www.witherle.lib.me.us/", 
+        "managers": [
+            1
+        ], 
+        "description": "Witherle Memorial Library serves the public in the town of Castine and its environs by providing diverse informational, recreational, and educational resources for all age groups.", 
+        "title": "Witherle Memorial Library", 
+        "created": "2014-06-01T11:45:10.794Z", 
+        "modified": "2014-06-01T11:54:46.188Z", 
+        "phone": "207-326-4375", 
+        "slug": "witherle-memorial-library"
+    }
+},
+{
+    "pk": 1, 
+    "model": "volunteers.project", 
+    "fields": {
+        "description": "", 
+        "title": "Habit Build on 14 Elm Street", 
+        "image": "project_images/Seal_of_Bangor_Maine.gif", 
+        "created": "2014-06-01T11:26:27.464Z", 
+        "modified": "2014-06-01T11:26:27.502Z", 
+        "lead_volunteers": [
+            1
+        ], 
+        "organization": 1, 
+        "slug": "habit-build-on-14-elm-street"
+    }
+},
+{
+    "pk": 2, 
+    "model": "volunteers.project", 
+    "fields": {
+        "description": "", 
+        "title": "Witherle Library Volunteering", 
+        "image": "project_images/Screen_Shot_2014-06-01_at_7.45.38_AM.png", 
+        "created": "2014-06-01T11:45:55.698Z", 
+        "modified": "2014-06-01T11:45:55.771Z", 
+        "lead_volunteers": [
+            1
+        ], 
+        "organization": 2, 
+        "slug": "witherle-library-volunteering"
+    }
+},
+{
+    "pk": 1, 
+    "model": "volunteers.opportunity", 
+    "fields": {
+        "labor_type": null, 
+        "description": "", 
+        "title": "Carpentry", 
+        "created": "2014-06-01T11:26:45.981Z", 
+        "modified": "2014-06-01T11:26:46.020Z", 
+        "project": 1, 
+        "time": "07:26:30", 
+        "date": "2014-06-01", 
+        "slug": "carpentry"
+    }
+},
+{
+    "pk": 2, 
+    "model": "volunteers.opportunity", 
+    "fields": {
+        "labor_type": null, 
+        "description": "", 
+        "title": "General help", 
+        "created": "2014-06-01T11:41:50.368Z", 
+        "modified": "2014-06-01T11:41:50.393Z", 
+        "project": 1, 
+        "time": "06:00:00", 
+        "date": "2014-06-20", 
+        "slug": "general-help"
+    }
+},
+{
+    "pk": 3, 
+    "model": "volunteers.opportunity", 
+    "fields": {
+        "labor_type": null, 
+        "description": "", 
+        "title": "Book sale organizing", 
+        "created": "2014-06-01T11:46:15.978Z", 
+        "modified": "2014-06-01T11:46:15.996Z", 
+        "project": 2, 
+        "time": "07:46:01", 
+        "date": "2014-06-01", 
+        "slug": "book-sale-organizing"
+    }
+}
+]

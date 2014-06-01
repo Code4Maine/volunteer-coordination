@@ -6,10 +6,15 @@ from django_extensions.db.models import (TitleSlugDescriptionModel,
                                          TimeStampedModel)
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
 from .utils import get_lat_long
 
 
-class Location(TimeStampedModel, TitleSlugDescriptionModel):
+class Location(TimeStampedModel):
+    slug = models.SlugField(_('slug'))
     address = models.CharField(_('address'),
                                max_length=255, blank=True, null=True)
     city = models.CharField(_('city'), max_length=100, blank=True, null=True)
@@ -49,15 +54,25 @@ class Location(TimeStampedModel, TitleSlugDescriptionModel):
         super(Location, self).save()
 
 
+#class Skill(TaggedItemBase):
+#    pass
+
+
 class Organization(TimeStampedModel, TitleSlugDescriptionModel):
     phone = PhoneNumberField(blank=True, null=True)
     website = models.CharField(max_length=255, blank=True, null=True)
+    managers = models.ManyToManyField(get_user_model(),
+                                      blank=True,
+                                      null=True)
 
     objects = gis_models.GeoManager()
 
     @permalink
     def get_absolute_url(self):
-        return ('organization-detail', None, {'slug': self.slug})
+        return ('project-list', None, {})
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
 
 
 class LaborType(TitleSlugDescriptionModel):
@@ -65,24 +80,59 @@ class LaborType(TitleSlugDescriptionModel):
 
     @permalink
     def get_absolute_url(self):
-        return ('task-type', None, {'slug': self.slug})
+        return ('opportunity-type', None, {'slug': self.slug})
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
 
 
-class Task(TimeStampedModel, TitleSlugDescriptionModel):
+class Project(TimeStampedModel, TitleSlugDescriptionModel):
+    lead_volunteers = models.ManyToManyField(get_user_model(),
+                                             blank=True,
+                                             null=True)
+    organization = models.ForeignKey(Organization, related_name='projects')
+    image = models.ImageField(upload_to="project_images",
+                              blank=True,
+                              null=True)
+
+    @permalink
+    def get_absolute_url(self):
+        return ('project-detail', None, {'slug': self.slug})
+
+    def __unicode__(self):
+        return u'{0} at {1}'.format(self.title, self.organization)
+
+
+class OpenOpportunityManager(models.Manager):
+    def get_queryset(self):
+        return super(OpenOpportunityManager, self).get_queryset().filter(
+            fulfilled=False)
+
+
+class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
+    project = models.ForeignKey(Project)
     location = models.ForeignKey(Location, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
-    organization = models.ForeignKey(Organization, related_name='organization')
     labor_type = models.ForeignKey(LaborType, blank=True, null=True)
+    fulfilled = models.BooleanField(default=False)
+    max_applicants = models.IntegerField(_('Max applicants'), blank=True,
+                                         null=True)
+
+    requirements = TaggableManager()
 
     objects = gis_models.GeoManager()
+    open_objects = OpenOpportunityManager()
 
     @permalink
     def get_absolute_url(self):
         return (
-            'artifact-detail',
+            'opportunity-detail',
             None,
-            {'organization-slug': self.organization.slug, 'slug': self.slug})
+            {'project_slug': self.project.slug, 'slug': self.slug})
+
+    def __unicode__(self):
+        return u'{0} for {1}'.format(self.title, self.project)
 
     @property
     def location(self):
@@ -91,3 +141,51 @@ class Task(TimeStampedModel, TitleSlugDescriptionModel):
         else:
             return False
 
+
+class Volunteer(TimeStampedModel):
+    '''
+    '''
+    name = models.CharField(_('Name'), max_length=255)
+    phone_number = PhoneNumberField(blank=True, null=True)
+    address = models.CharField(blank=True, null=True,
+                               max_length=255)
+    user = models.ForeignKey(get_user_model(), blank=True, null=True)
+
+    opportunities_completed = models.ManyToManyField(Opportunity,
+                                                     blank=True,
+                                                     null=True)
+
+    @property
+    def is_manager(self):
+        if self.organization_set.all():
+            return True
+        else:
+            return False
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+
+APP_STATUSES = (('pending', 'Pending'),
+                ('approved', 'Approved'),
+                ('denied', 'Denied'))
+
+
+def create_volunteer_profile(sender, instance, created, **kwargs):
+    if created:
+        Volunteer.objects.create(user=instance)
+
+post_save.connect(create_volunteer_profile, sender=get_user_model())
+
+
+class VolunteerApplication(TimeStampedModel):
+
+    user = models.ForeignKey(get_user_model())
+    opportunity = models.ForeignKey(Opportunity)
+    status = models.CharField(_('Status'),
+                              choices=APP_STATUSES,
+                              default='pending',
+                              max_length=15)
+
+    def __unicode__(self):
+        return u'Application for {0}: {1}'.format(self.opportunity, self.user)

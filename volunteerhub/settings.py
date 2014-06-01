@@ -30,6 +30,10 @@ class Common(Configuration):
 
     USE_SOUTH = True
 
+    SOUTH_MIGRATION_MODULES = {
+        'taggit': 'taggit.south_migrations',
+    }
+
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -63,6 +67,10 @@ class Common(Configuration):
         "django_extensions",
         'foundation',
         'floppyforms',
+        'taggit',
+        'south',
+        'braces',
+        'localflavor',
 
         'volunteers',
 
@@ -88,6 +96,11 @@ class Common(Configuration):
         "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     )
 
+    ACCOUNT_AUTHENTICATION_METHOD = "email"
+    ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+    ACCOUNT_EMAIL_REQUIRED = True
+    ACCOUNT_UNIQUE_EMAIL = True
+    ACCOUNT_USERNAME_REQUIRED = False
 
     AUTHENTICATION_BACKENDS = (
         "django.contrib.auth.backends.ModelBackend",
