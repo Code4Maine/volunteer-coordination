@@ -69,7 +69,7 @@ class Organization(TimeStampedModel, TitleSlugDescriptionModel):
 
     @permalink
     def get_absolute_url(self):
-        return ('organization-detail', None, {'slug': self.slug})
+        return ('project-list', None, {})
 
     def __unicode__(self):
         return u'{0}'.format(self.title)
@@ -91,7 +91,9 @@ class Project(TimeStampedModel, TitleSlugDescriptionModel):
                                              blank=True,
                                              null=True)
     organization = models.ForeignKey(Organization, related_name='organization')
-    image = models.ImageField(upload_to="project_images")
+    image = models.ImageField(upload_to="project_images",
+                              blank=True,
+                              null=True)
 
     @permalink
     def get_absolute_url(self):
