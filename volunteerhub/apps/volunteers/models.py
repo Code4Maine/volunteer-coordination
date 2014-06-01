@@ -53,8 +53,8 @@ class Location(TimeStampedModel):
         super(Location, self).save()
 
 
-class Skill(TaggedItemBase):
-    pass
+#class Skill(TaggedItemBase):
+#    pass
 
 
 class Organization(TimeStampedModel, TitleSlugDescriptionModel):
