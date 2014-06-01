@@ -6,6 +6,8 @@
 {% block head_title %}OpenID Sign In{% endblock %}
 
 {% block content %}
+<div class="row">
+<div class="large-12 columns">
 
 <h1>{% trans 'OpenID Sign In' %}</h1>
 
@@ -15,5 +17,6 @@
 {{form.as_p}}
 <button type="submit">Sign In</button>
 </form>
-
+</div>
+</div>
 {% endblock %}
