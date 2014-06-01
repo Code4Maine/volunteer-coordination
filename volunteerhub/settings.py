@@ -65,7 +65,7 @@ class Common(Configuration):
         'floppyforms',
         'taggit',
 
-        'volunteers',
+        'projects',
 
     )
 
@@ -89,6 +89,7 @@ class Common(Configuration):
         "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     )
 
+    ACCOUNT_USER_MODEL_USERNAME_FIELD="email"
 
     AUTHENTICATION_BACKENDS = (
         "django.contrib.auth.backends.ModelBackend",
