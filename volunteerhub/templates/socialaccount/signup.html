@@ -6,6 +6,8 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
+<div class="row">
+<div class="large-12 columns">
     <h1>{% trans "Sign Up" %}</h1>
 
 <p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login to
@@ -20,5 +22,6 @@
   <button type="submit">{% trans "Sign Up" %} &raquo;</button>
 </form>
 
-
+</div>
+</div>
 {% endblock %}

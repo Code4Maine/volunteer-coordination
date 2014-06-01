@@ -3,6 +3,8 @@
 
 
 {% block content %}
+<div class="row">
+<div class="large-12 columns">
 
 <h2>My projects</h2>
 {% for org in request.user.organization_set.all %}
@@ -54,4 +56,6 @@
 <p>Address: {{object.address}}</p>
 
 <button>Edit</button>
+</div>
+</div>
 {% endblock %}
