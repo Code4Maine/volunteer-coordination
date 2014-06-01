@@ -9,7 +9,7 @@ urlpatterns = patterns(
     '',
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('allauth.urls')),
-    (r'^volunteer/', include('volunteers.urls')),
+    (r'^projects/', include('projects.urls')),
     url("^$",
         TemplateView.as_view(template_name='homepage.html'),
         name="homepage"),
