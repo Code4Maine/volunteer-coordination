@@ -48,7 +48,6 @@ coverage.xml
 
 # Mr Developer
 .mr.developer.cfg
-.project
 .pydevproject
 
 # Rope
@@ -63,3 +62,4 @@ docs/_build/
 
 venv
 *.sqlite3
+public

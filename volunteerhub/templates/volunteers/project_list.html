@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+    <div class="row">
+      <div class="large-12 columns">
+        <h2 id="logo">VolunteerHub</h2>
+      </div>
+    </div>
+    
+    {% if not user.is_authenticated %}
+    <div class="row">
+      <div class="large-12 columns">
+      	<div class="panel">
+            <p>To get going, you're going to need to login or <a href="/accounts/signup/">create an account</a></p>
+      	</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <h2>We need you!</h2>
+    {% for obj in object_list %}
+    <div>
+        <span class="label">{{obj.organization}}</span>
+        <h4><a href="{{ obj.get_absolute_url }}">{{obj.title}}</a></h4>
+        <p>{{obj.organization.description}}</p>
+    </div>
+    {% endfor %}
+{% endblock %}
