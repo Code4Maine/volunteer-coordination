@@ -96,7 +96,7 @@ class OpportunityVolunteerView(View):
         # 1. Grab user from request
         user = request.user
         if user.is_anonymous():
-            return redirect(reverse('account_signup'))
+            return redirect(reverse('account_login'))
         # 2. Check that they can apply to the opportunity in the url
         qs = Opportunity.open_objects.all()
         try:
