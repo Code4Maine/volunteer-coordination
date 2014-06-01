@@ -112,7 +112,7 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     labor_type = models.ForeignKey(LaborType, blank=True, null=True)
-    fullfilled = models.BooleanField(default=False)
+    fulfilled = models.BooleanField(default=False)
     max_applicants = models.IntegerField(_('Max applicants'), blank=True,
                                          null=True)
 
