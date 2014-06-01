@@ -1,6 +1,6 @@
 VolunteerHub
 ============
-VolunteerHub.me
+www.VolunteerHub.me
 
 Volunteer Hub is a volunteer coordination system that allows organizations to create projects and opportunities that people can then browse and select to volunteer for the organizations.
 
@@ -12,11 +12,10 @@ The website and Android application work together to access the same database.
 
 Group Members
 -------------------
-Zack Schiller
-Nate Welch
-Colin Powell
-Leslie Mercier
-Chris Violette
-Dan Pratt
-Christian Roberts
-
+- Zack Schiller
+- Nate Welch
+- Colin Powell
+- Leslie Mercier
+- Chris Violette
+- Dan Pratt
+- Christian Roberts
