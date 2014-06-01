@@ -70,11 +70,11 @@
             <ul class="dropdown">
               <li><a href="{% url 'profile-update' %}">Edit profile</a></li>
               <li class="divider"></li>
-              <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
+              <li><a data-reveal-ajax="true" data-reveal-id="myModal" href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
             </ul>
           </li>
         {% else %}
-        <li class=""><a href="{% url 'account_signup' %}">Sign up</a></li>
+        <li class=""><a data-reveal-ajax="true" href="{% url 'account_signup' %}">Sign up</a></li>
         <li class=""><a href="{% url 'account_login' %}">Log in</a></li>
         {% endif %}
         </ul>
@@ -100,6 +100,7 @@
     {# Foundation JS #}
     {% block foundation_js %}
     {% foundation_js %}
+    {% foundation_js 'reveal' %}
     {% endblock foundation_js %}
 
     {# Custom JS #}
