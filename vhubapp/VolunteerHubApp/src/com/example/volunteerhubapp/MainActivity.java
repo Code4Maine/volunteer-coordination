@@ -22,24 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 public class MainActivity extends ActionBarActivity {
 
     private static TextView tv;
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a {@link FragmentPagerAdapter}
-     * derivative, which will keep every loaded fragment in memory. If this
-     * becomes too memory intensive, it may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
-    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +34,24 @@ public class MainActivity extends ActionBarActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        /*
+      The {@link android.support.v4.view.PagerAdapter} that will provide
+      fragments for each of the sections. We use a {@link FragmentPagerAdapter}
+      derivative, which will keep every loaded fragment in memory. If this
+      becomes too memory intensive, it may be best to switch to a
+      {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         tv = new TextView(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.addContentView(tv, lp);
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        /*
+      The {@link ViewPager} that will host the section contents.
+     */
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
@@ -73,10 +69,8 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     /**
@@ -107,7 +101,6 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             ViewGroup rootView = null;
-            String description_parsed = "";
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 Thread t = new Thread(new NetworkOperations());
                 t.start();
@@ -132,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void run() {
-                String description_parsed = "";
+                String description_parsed;
                 StringBuilder builder = new StringBuilder();
                 HttpClient client = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(
@@ -141,10 +134,9 @@ public class MainActivity extends ActionBarActivity {
                     HttpResponse response = client.execute(httpGet);
                     HttpEntity entity = response.getEntity();
                     InputStream content = entity.getContent();
-                    BufferedReader reader = null;
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
                     try {
-                        reader = new BufferedReader(new InputStreamReader(content));
-                        String line = "";
+                        String line;
                         while ((line = reader.readLine()) != null) {
                             builder.append(line);
                         }
@@ -152,7 +144,9 @@ public class MainActivity extends ActionBarActivity {
                         e.printStackTrace();
                     } finally {
                         try {
-                            reader.close();
+                            if (reader != null) {
+                                reader.close();
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
