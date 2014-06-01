@@ -28,7 +28,7 @@
           <li>
               <span class="label">{{obj.organization}}</span>
               <h4><a href="{{ obj.get_absolute_url }}">{{obj.title}}</a></h4>
-              {% if obj.image %}<img src="{{obj.image}}">{% endif %}
+              {% if obj.image %}<img src="/media/{{obj.image}}">{% endif %}
               <p>{{obj.organization.description}}</p>
           </li>
           {% endfor %}
