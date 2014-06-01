@@ -1,6 +1,36 @@
 [
 {
     "pk": 1, 
+    "model": "custom_user.emailuser", 
+    "fields": {
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-06-01T10:35:36.171Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$5xEOcOfTRcj6$2DpWerS98tHSdIknsgKqgJAFWgOZUSAVBPXaDv1p0cI=", 
+        "email": "colin@onec.me", 
+        "date_joined": "2014-06-01T10:35:35.880Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "custom_user.emailuser", 
+    "fields": {
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2014-06-01T11:22:21.037Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$lByRHmAnSBBo$sqYoDJUU8a7wmj48hZSLH+Ci9/HFWqNCi5LDb+f8k38=", 
+        "email": "admin@volunteerhub.me", 
+        "date_joined": "2014-06-01T11:22:05.006Z"
+    }
+},
+{
+    "pk": 1, 
     "model": "volunteers.organization", 
     "fields": {
         "website": "", 
