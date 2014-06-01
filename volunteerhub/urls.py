@@ -9,8 +9,7 @@ urlpatterns = patterns(
     '',
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('allauth.urls')),
-    (r'^', include('roles.urls')),
-    (r'^', include('projects.urls')),
+    (r'^', include('volunteers.urls')),
 )
 
 if settings.DEBUG:

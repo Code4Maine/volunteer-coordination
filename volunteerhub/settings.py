@@ -72,8 +72,7 @@ class Common(Configuration):
         'braces',
         'localflavor',
 
-        'projects',
-        'roles',
+        'volunteers',
 
     )
 

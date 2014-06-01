@@ -1,12 +1,13 @@
 from django.http import HttpResponse
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView, ListView, View
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
+from .forms import ProfileForm
 
-from .models import Opportunity, Project, Organization
+from .models import Opportunity, Project, Organization, Volunteer
 from braces import views
 
 
@@ -31,7 +32,7 @@ def get_nearby_opportunities(request, *args, **kwargs):
             data = serializers.serialize('json', opportunities)
             return HttpResponse(data, mimetype='application/json')
         else:
-            html = render_to_string('projects/_task_list.html',
+            html = render_to_string('volunteers/_opportunity_list.html',
                                     {'object_list': opportunities})
             return HttpResponse(html, mimetype='text/html')
 
@@ -107,4 +108,28 @@ class OrganizationListView(ListView):
 
 class OrganizationDetailView(DetailView):
     model = Organization
+
+
+class DashboardView(DetailView):
+    ''' DashboardView
+
+    
+    '''
+    model = Volunteer
+    template_name = 'roles/dashboard.html'
+
+    def get_object(self, *args, **kwargs):
+        return self.request.user
+
+
+class ProfileUpdateView(UpdateView):
+    model = Volunteer
+    template_name = 'roles/profile_update.html'
+    form_class = ProfileForm
+
+    def get_object(self, *args, **kwargs):
+        return self.request.user
+
+    def get_form(self, form_class):
+        return form_class(**self.get_form_kwargs()['initial'])
 

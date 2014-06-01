@@ -123,3 +123,22 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
         else:
             return False
 
+
+class Volunteer(TimeStampedModel):
+    '''
+    '''
+    name = models.TextField(_('Name'), max_length=255)
+    phone_number = PhoneNumberField(blank=True, null=True)
+    address = models.CharField(blank=True, null=True,
+                               max_length=255)
+
+    opportunities_completed = models.ManyToManyField(Opportunity,
+                                                     blank=True,
+                                                     null=True)
+
+    @property
+    def is_manager(self):
+        if self.organization_set.all():
+            return True
+        else:
+            return False

@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url
 from .views import (OpportunityDetailView, ProjectListView,
                     ProjectDetailView, ProjectListJSONView,
-                    ProjectDetailJSONView, OpportunityDetailJSONView)
+                    ProjectDetailJSONView, OpportunityDetailJSONView,
+                    DashboardView, ProfileUpdateView)
 
 # custom views
 urlpatterns = patterns(
@@ -29,6 +30,14 @@ urlpatterns = patterns(
     url(r'^projects/',
         view=ProjectListView.as_view(),
         name="project-list"),
+
+    url(r'dashboard/edit-profile/',
+        view=ProfileUpdateView.as_view(),
+        name="profile-update"),
+
+    url(r'dashboard/',
+        view=DashboardView.as_view(),
+        name="dashboard"),
 
     url(r'^',
         view=ProjectListView.as_view(),
