@@ -100,17 +100,26 @@ class Project(TimeStampedModel, TitleSlugDescriptionModel):
         return u'{0} at {1}'.format(self.title, self.organization)
 
 
+class OpenOpportunityManager(models.Manager):
+    def get_queryset(self):
+        return super(OpenOpportunityManager, self).get_queryset().filter(
+            fulfilled=False)
+
+
 class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
     project = models.ForeignKey(Project)
     location = models.ForeignKey(Location, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     labor_type = models.ForeignKey(LaborType, blank=True, null=True)
-    #fullfilled = models.BooleanField(default=False)
+    fullfilled = models.BooleanField(default=False)
+    max_applicants = models.IntegerField(_('Max applicants'), blank=True,
+                                         null=True)
 
     requirements = TaggableManager()
 
     objects = gis_models.GeoManager()
+    open_objects = OpenOpportunityManager()
 
     @permalink
     def get_absolute_url(self):
@@ -148,3 +157,17 @@ class Volunteer(TimeStampedModel):
             return True
         else:
             return False
+
+APP_STATUSES = (('pending', 'Pending'),
+                ('approved', 'Approved'),
+                ('denied', 'Denied'))
+
+
+class VolunteerApplication(TimeStampedModel):
+
+    volunteer = models.ForeignKey(Volunteer)
+    opportunity = models.ForeignKey(Opportunity)
+    status = models.CharField(_('Status'),
+                              choices=APP_STATUSES,
+                              default='pending',
+                              max_length=15)

@@ -8,5 +8,5 @@
 
 <p>{{object.description}}</p>
 
-<button>Volunteer</button>
+<button href="{% url 'opportunity-volunteer' object.project.slug object.slug %}">Volunteer</button>
 {% endblock %}

@@ -1,13 +1,15 @@
 from django.http import HttpResponse
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views.generic import DetailView, ListView, View
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
+from django.shortcuts import get_object_or_404
 from .forms import ProfileForm
 
-from .models import Opportunity, Project, Organization, Volunteer
+from .models import (Opportunity, Project, Organization, Volunteer,
+                     VolunteerApplication)
 from braces import views
 
 
@@ -77,6 +79,30 @@ class ProjectListView(JsonView, ListView):
     model = Project
 
 
+class OpportunityVolunteerView(View):
+    '''
+    Takes a posted form with a volunteer and an OpportunityDetailJSONView
+    and adds the user to the opportunities candidate list.
+    '''
+
+    def get(self, request, *args, **kwargs):
+        # TODO:
+        # 1. Grab user from request
+        user = request.user
+        # 2. Check that they can apply to the opportunity in the url
+        qs = Opportunity.open_objects.all()
+        try:
+            opp = get_object_or_404(qs, slug=kwargs['slug'], project__slug=kwargs['project_slug'])
+            # 3. If so, add a VolunteerApplication
+            application = VolunteerApplication.objects.create(volunteer=user.volunteer,
+                                                              opportunity=opp)
+            application.save()
+        except:
+            pass
+        # 4. Notify the lead volunteers and managers of the project and org
+        return super(OpportunityVolunteerView, self).get(request, *args, **kwargs)
+
+
 class OpportunityDetailJSONView(JsonView, DetailView):
     model = Opportunity
     json_dumps_kwargs = {u"indent": 2}
@@ -129,7 +155,4 @@ class ProfileUpdateView(UpdateView):
 
     def get_object(self, *args, **kwargs):
         return self.request.user
-
-    def get_form(self, form_class):
-        return form_class(**self.get_form_kwargs()['initial'])
 
