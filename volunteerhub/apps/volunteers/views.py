@@ -1,11 +1,12 @@
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views.generic import DetailView, ListView, View
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from .forms import ProfileForm
 
 from .models import (Opportunity, Project, Organization, Volunteer,
@@ -92,15 +93,18 @@ class OpportunityVolunteerView(View):
         # 2. Check that they can apply to the opportunity in the url
         qs = Opportunity.open_objects.all()
         try:
-            opp = get_object_or_404(qs, slug=kwargs['slug'], project__slug=kwargs['project_slug'])
-            # 3. If so, add a VolunteerApplication
-            application = VolunteerApplication.objects.create(volunteer=user.volunteer,
-                                                              opportunity=opp)
-            application.save()
-        except:
-            pass
+            slug = kwargs['slug']
+            project_slug = kwargs['project_slug']
+        except AttributeError:
+            slug = project_slug = None
+
+        opp = get_object_or_404(qs, slug=slug, project__slug=project_slug)
+        # 3. If so, add a VolunteerApplication
+        application = VolunteerApplication.objects.create(user=user,
+                                                          opportunity=opp)
+        application.save()
         # 4. Notify the lead volunteers and managers of the project and org
-        return super(OpportunityVolunteerView, self).get(request, *args, **kwargs)
+        return redirect(reverse('opportunity-detail', {'slug':slug, 'project_slug':project_slug}))
 
 
 class OpportunityDetailJSONView(JsonView, DetailView):

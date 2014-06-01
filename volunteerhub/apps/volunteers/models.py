@@ -7,6 +7,7 @@ from django_extensions.db.models import (TitleSlugDescriptionModel,
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 from .utils import get_lat_long
@@ -146,6 +147,7 @@ class Volunteer(TimeStampedModel):
     phone_number = PhoneNumberField(blank=True, null=True)
     address = models.CharField(blank=True, null=True,
                                max_length=255)
+    user = models.ForeignKey(get_user_model(), blank=True, null=True)
 
     opportunities_completed = models.ManyToManyField(Opportunity,
                                                      blank=True,
@@ -162,10 +164,15 @@ APP_STATUSES = (('pending', 'Pending'),
                 ('approved', 'Approved'),
                 ('denied', 'Denied'))
 
+def create_volunteer_profile(sender, instance, created, **kwargs):
+    if created:
+        Volunteer.objects.create(user=instance)
+
+post_save.connect(create_volunteer_profile, sender=get_user_model())
 
 class VolunteerApplication(TimeStampedModel):
 
-    volunteer = models.ForeignKey(Volunteer)
+    user = models.ForeignKey(get_user_model())
     opportunity = models.ForeignKey(Opportunity)
     status = models.CharField(_('Status'),
                               choices=APP_STATUSES,
