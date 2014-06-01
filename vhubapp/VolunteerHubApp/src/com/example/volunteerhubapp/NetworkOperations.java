@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import android.view.LayoutInflater;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -15,11 +16,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class NetworkOperations implements Runnable {
+    ViewGroup rootView;
+
+    public NetworkOperations(ViewGroup rootView){
+        this.rootView = rootView;
+    }
 
 	@Override
 	public void run() {
-		/*rootView = (ViewGroup) inflater.inflate(R.layout.home,
-				container, false);
+        String description_parsed = "";
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(
@@ -42,8 +47,6 @@ public class NetworkOperations implements Runnable {
 
 		TextView textview = new TextView(rootView.getContext());
 		textview.setText(description_parsed);
-		rootView.addView(textview);*/
-
+		rootView.addView(textview);
 	}
-
 }
