@@ -8,6 +8,7 @@ from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
 from .utils import get_lat_long
 
 
@@ -50,6 +51,10 @@ class Location(TimeStampedModel):
             'POINT(%s)' % self.lat_long.replace(',', ' '))
 
         super(Location, self).save()
+
+
+class Skill(TaggedItemBase):
+    pass
 
 
 class Organization(TimeStampedModel, TitleSlugDescriptionModel):
@@ -101,6 +106,7 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     labor_type = models.ForeignKey(LaborType, blank=True, null=True)
+    #fullfilled = models.BooleanField(default=False)
 
     requirements = TaggableManager()
 

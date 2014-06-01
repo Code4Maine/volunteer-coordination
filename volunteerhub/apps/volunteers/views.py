@@ -116,7 +116,7 @@ class DashboardView(DetailView):
     
     '''
     model = Volunteer
-    template_name = 'roles/dashboard.html'
+    template_name = 'volunteers/dashboard.html'
 
     def get_object(self, *args, **kwargs):
         return self.request.user
@@ -124,7 +124,7 @@ class DashboardView(DetailView):
 
 class ProfileUpdateView(UpdateView):
     model = Volunteer
-    template_name = 'roles/profile_update.html'
+    template_name = 'volunteers/profile_update.html'
     form_class = ProfileForm
 
     def get_object(self, *args, **kwargs):

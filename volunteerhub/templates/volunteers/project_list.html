@@ -20,10 +20,12 @@
     </div>
     {% endif %}
 
-    <h2>Volunteers needed</h2>
-    <ul>
-        {% for obj in object_list %}
-        <li><a href="{{ obj.get_absolute_url }}">{{obj}}</a></li>
-        {% endfor %}
-    </ul>
+    <h2>We need you!</h2>
+    {% for obj in object_list %}
+    <div>
+        <span class="label">{{obj.organization}}</span>
+        <h4><a href="{{ obj.get_absolute_url }}">{{obj.title}}</a></h4>
+        <p>{{obj.organization.description}}</p>
+    </div>
+    {% endfor %}
 {% endblock %}
