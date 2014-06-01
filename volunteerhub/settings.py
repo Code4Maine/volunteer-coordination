@@ -195,7 +195,7 @@ class Dev(Common):
     DEBUG = TEMPLATE_DEBUG = True
 
     DATABASES = values.DatabaseURLValue(
-        'postgis://localhost/vhub')
+        'postgis://vhub:mainroot@localhost/vhub')
 
     SECRET_KEY = 'notasecretatall'
 
