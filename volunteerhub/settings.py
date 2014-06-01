@@ -98,6 +98,8 @@ class Common(Configuration):
 
     ACCOUNT_USER_MODEL_USERNAME_FIELD="email"
 
+    ACCOUNT_USERNAME_REQUIRED = False
+
     AUTHENTICATION_BACKENDS = (
         "django.contrib.auth.backends.ModelBackend",
         "allauth.account.auth_backends.AuthenticationBackend",)
