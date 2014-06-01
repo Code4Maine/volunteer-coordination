@@ -1,6 +1,7 @@
 from django.template.base import Library
 
-from volunteers.models import VolunteerApplication, Organization
+from volunteers.models import (VolunteerApplication, Organization,
+                               Project)
 
 register = Library()
 
@@ -20,8 +21,23 @@ def application_status(context, opp, user):
 
 @register.assignment_tag(takes_context=True)
 def manager_of(context, org, user):
-    organization = Organization.objects.get(slug=org.slug, managers=user)
+    try:
+        organization = Organization.objects.get(slug=org.slug, managers=user)
+    except:
+        organization = None
     if organization:
+        return True
+    else:
+        return False
+
+
+@register.assignment_tag(takes_context=True)
+def lead_volunteer_of(context, project, user):
+    try:
+        proj = Project.objects.get(slug=project.slug, lead_volunteers=user)
+    except:
+        proj = None
+    if proj:
         return True
     else:
         return False

@@ -7,7 +7,7 @@ from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect
-from .forms import ProfileForm
+from .forms import ProfileForm, ProjectForm
 
 from .models import (Opportunity, Project, Organization, Volunteer,
                      VolunteerApplication)
@@ -65,6 +65,10 @@ class ProjectDetailView(JsonView, DetailView):
     model = Project
 
 
+class ProjectCreateView(CreateView):
+    model = Project
+
+
 class ProjectListJSONView(JsonView, ListView):
     model = Project
     json_dumps_kwargs = {u"indent": 2}
@@ -78,6 +82,7 @@ class ProjectListJSONView(JsonView, ListView):
 
 class ProjectListView(JsonView, ListView):
     model = Project
+    form_class = ProjectForm
 
 
 class OpportunityVolunteerView(View):
@@ -90,6 +95,8 @@ class OpportunityVolunteerView(View):
         # TODO:
         # 1. Grab user from request
         user = request.user
+        if user.is_anonymous():
+            return redirect(reverse('account_signup'))
         # 2. Check that they can apply to the opportunity in the url
         qs = Opportunity.open_objects.all()
         try:

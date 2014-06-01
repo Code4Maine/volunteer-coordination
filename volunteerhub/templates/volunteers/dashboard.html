@@ -4,23 +4,32 @@
 
 {% block content %}
 
-<h2>My organizations</h2>
+<h2>My projects</h2>
 {% for org in request.user.organization_set.all %}
 {% manager_of org user as manager %}
 {% if manager %}
-<div>
-    <h4>{{org.title}}</h4>
-    {% if org.image %}<img src={{org.image}}" />{% endif %}
-    {% for project in org.projects.all %}
-    {% if not project.fulfilled %}
-    <p><a href="{{project.get_absolute_url}}">{{project.title}}</a></p>
-    {% endif %}
-    {% endfor %}
-    <a class="button" href="#"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Add a new project</a>
-</div>
+{% for project in org.projects.all %}
+{% if not project.fulfilled %}
+<p><a href="{{project.get_absolute_url}}">{{project.title}}</a>&nbsp;<span class="label">{{org.title}}</span></p>
 {% endif %}
 {% endfor %}
+{% endif %}
+{% if forloop.last%}
+<p><a class="button" href="{% url 'project-create' org.slug %}"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Add a new project</a></p>
 <hr />
+<h2>Applications waiting for review</h2>
+{% for opp in org.opportunity_set.all %}
+{% for app in opp.volunteerapplication_set.all %}
+{% if app.status == 'pending' %}
+{{app}}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% endif %}
+{% endfor %}
+
+
 
 {% if applications %}
 <h2>My application status</h2>
