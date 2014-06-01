@@ -10,7 +10,7 @@ urlpatterns = patterns(
         view=ProjectListView.as_view(),
         name="project-list"),
 
-    url(r'^(?P<slug>[-\w]+)/json$',
+    url(r'^(?P<slug>[-\w]+).json$',
         view=ProjectListJSONView.as_view(),
         name="project-list-json"),
 
@@ -18,7 +18,7 @@ urlpatterns = patterns(
         view=ProjectDetailView.as_view(),
         name="project-detail"),
 
-    url(r'^(?P<slug>[-\w]+)/opportunities/json$',
+    url(r'^(?P<slug>[-\w]+)/opportunities.json$',
         view=ProjectDetailJSONView.as_view(),
         name="project-detail-json"),
 
@@ -26,7 +26,7 @@ urlpatterns = patterns(
         view=OpportunityDetailView.as_view(),
         name="opportunity-detail"),
 
-    url(r'^(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+)/json$',
+    url(r'^(?P<project_slug>[-\w]+)/opportunities/(?P<slug>[-\w]+).json$',
         view=OpportunityDetailJSONView.as_view(),
         name="opportunity-detail-json"),
 )
