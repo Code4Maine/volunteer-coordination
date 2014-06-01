@@ -1,22 +1,19 @@
 package com.example.volunteerhubapp;
 
 import java.util.Locale;
+import java.util.logging.Logger;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -33,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	private Logger logger;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,8 @@ public class MainActivity extends ActionBarActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
+		Thread t = new Thread(new NetworkOperations());
+		t.start();
 	}
 
 	@Override
@@ -136,21 +135,20 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = null;
+			ViewGroup rootView = null;
+			String description_parsed = "";
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-				rootView = inflater.inflate(R.layout.home,
+				NetworkOperations z = new NetworkOperations();
+			}
+
+			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+				rootView = (ViewGroup) inflater.inflate(R.layout.login,
 						container, false);
-			} 
-			
-			else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-				rootView = inflater.inflate(R.layout.login,
-						container, false);
-			} 
-			
+			}
+
 			else {
-				rootView = inflater.inflate(R.layout.fragment_main, container,
-						false);
-				
+				rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main,
+						container, false);
 			}
 			return rootView;
 		}
