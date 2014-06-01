@@ -1,4 +1,3 @@
-from django.core import serializers
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView
 from django.views.generic import DetailView, ListView, View
@@ -7,7 +6,7 @@ from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
 
-from .models import Opportunity, Project
+from .models import Opportunity, Project, Organization
 from braces import views
 
 
@@ -100,4 +99,12 @@ class OpportunityDetailView(JsonView, DetailView):
 
 class CreateOpportunityView(CreateView):
     pass
+
+
+class OrganizationListView(ListView):
+    model = Organization
+
+
+class OrganizationDetailView(DetailView):
+    model = Organization
 

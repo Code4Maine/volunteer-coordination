@@ -1,1 +1,19 @@
 {% extends "base.html" %}
+
+
+{% block content %}
+
+{% if user.is_lead %}
+<h2>Your projects</h2>
+
+{% endif %}
+
+<h2>Profile</h2>
+
+<p>Name: {{object.volunteer.name}}</p>
+<p>Email: {{object}}</p>
+<p>Phone: {{object.volunteer.phone_number}}</p>
+<p>Address: {{object.address}}</p>
+
+<button>Edit</button>
+{% endblock %}

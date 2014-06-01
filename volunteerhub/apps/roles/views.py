@@ -1,18 +1,29 @@
-from django.views.generic import DetailView, ListView, TemplateView
-from .models import Organization
+from django.views.generic import DetailView
+from django.views.generic.edit import UpdateView
+from .models import Volunteer
+from .forms import ProfileForm
 
 
-class DashboardView(TemplateView):
+class DashboardView(DetailView):
     ''' DashboardView
 
     
     '''
+    model = Volunteer
     template_name = 'roles/dashboard.html'
 
+    def get_object(self, *args, **kwargs):
+        return self.request.user
 
-class OrganizationListView(ListView):
-    model = Organization
 
+class ProfileUpdateView(UpdateView):
+    model = Volunteer
+    template_name = 'roles/profile_update.html'
+    form_class = ProfileForm
 
-class OrganizationDetailView(DetailView):
-    model = Organization
+    def get_object(self, *args, **kwargs):
+        return self.request.user
+
+    def get_form(self, form_class):
+        return form_class(**self.get_form_kwargs()['initial'])
+

@@ -3,8 +3,13 @@
 
 {% block content %}
 
-<h2>{{object}}</h2>
-<p>{{object.description}}</p>
+<h2>Project: {{object}}</h2>
+
+<div class="desc">
+  <p>{{object.description}}</p>
+  <p style="float:right">{{object.organization}}</p>
+</div>
+<h3>Volunteer opportunities</h3>
 <ul>
     {% for obj in object.opportunity_set.all %}
     <li><a href="{{ obj.get_absolute_url }}">{{obj}}</a></li>

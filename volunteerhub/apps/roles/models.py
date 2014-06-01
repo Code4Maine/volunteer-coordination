@@ -55,28 +55,17 @@ class Location(TimeStampedModel):
         super(Location, self).save()
 
 
-class Organization(TimeStampedModel, TitleSlugDescriptionModel):
-    ''' Organization model.
-
-    '''
-    phone = PhoneNumberField(blank=True, null=True)
-    website = models.CharField(max_length=255, blank=True, null=True)
-
-    objects = gis_models.GeoManager()
-
-    @permalink
-    def get_absolute_url(self):
-        return ('organization-detail', None, {'slug': self.slug})
-
-    def __unicode__(self):
-        return u'{0}'.format(self.title)
-
-
 class Volunteer(TimeStampedModel):
     '''
-    name
-    email
-    PhoneNumberField
-    tasks_completed
     '''
-    pass
+    name = models.TextField(_('Name'), max_length=255)
+    phone_number = PhoneNumberField(blank=True, null=True)
+
+    opportunities_completed = models.ManyToManyField('projects.Opportunity')
+
+    @property
+    def is_manager(self):
+        if self.organization_set.all():
+            return True
+        else:
+            return False

@@ -3,10 +3,27 @@
 
 {% block content %}
 
-<h2>Projects</h2>
-<ul>
-    {% for obj in object_list %}
-    <li><a href="{{ obj.get_absolute_url }}">{{obj}}</a></li>
-    {% endfor %}
-</ul>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <h2 id="logo">VolunteerHub</h2>
+      </div>
+    </div>
+    
+    {% if not user.is_authenticated %}
+    <div class="row">
+      <div class="large-12 columns">
+      	<div class="panel">
+            <p>To get going, you're going to need to login or <a href="/accounts/signup/">create an account</a></p>
+      	</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <h2>Volunteers needed</h2>
+    <ul>
+        {% for obj in object_list %}
+        <li><a href="{{ obj.get_absolute_url }}">{{obj}}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}

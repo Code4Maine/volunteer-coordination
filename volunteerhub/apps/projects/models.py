@@ -6,6 +6,7 @@ from django_extensions.db.models import (TitleSlugDescriptionModel,
                                          TimeStampedModel)
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
 from .utils import get_lat_long
 
@@ -54,6 +55,9 @@ class Location(TimeStampedModel):
 class Organization(TimeStampedModel, TitleSlugDescriptionModel):
     phone = PhoneNumberField(blank=True, null=True)
     website = models.CharField(max_length=255, blank=True, null=True)
+    managers = models.ManyToManyField(get_user_model(),
+                                      blank=True,
+                                      null=True)
 
     objects = gis_models.GeoManager()
 
@@ -77,7 +81,10 @@ class LaborType(TitleSlugDescriptionModel):
 
 
 class Project(TimeStampedModel, TitleSlugDescriptionModel):
-    #lead_volunteer = models.ForeignKey(User)
+    lead_volunteers = models.ManyToManyField(get_user_model(),
+                                             blank=True,
+                                             null=True)
+    organization = models.ForeignKey(Organization, related_name='organization')
     image = models.ImageField(upload_to="project_images")
 
     @permalink
@@ -85,7 +92,7 @@ class Project(TimeStampedModel, TitleSlugDescriptionModel):
         return ('project-detail', None, {'slug': self.slug})
 
     def __unicode__(self):
-        return u'{0}'.format(self.title)
+        return u'{0} at {1}'.format(self.title, self.organization)
 
 
 class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
@@ -93,7 +100,6 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
     location = models.ForeignKey(Location, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
-    organization = models.ForeignKey(Organization, related_name='organization')
     labor_type = models.ForeignKey(LaborType, blank=True, null=True)
 
     requirements = TaggableManager()
@@ -108,7 +114,7 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
             {'project_slug': self.project.slug, 'slug': self.slug})
 
     def __unicode__(self):
-        return u'{0} for {1}'.format(self.title, self.organization)
+        return u'{0} for {1}'.format(self.title, self.project)
 
     @property
     def location(self):

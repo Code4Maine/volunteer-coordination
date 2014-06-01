@@ -20,6 +20,7 @@
     
     {# Custom CSS #}
     {% block css %}{% endblock css %}
+    <link rel="stylesheet" href="/static/css/site.css"/>
 
     {# Override if you need another version of modernizr #}
     {% block foundation_modernizer %}
@@ -52,9 +53,6 @@
           <li class="">
           <a href="{% url 'dashboard' %}"><i class="fa fa-home"></i>&nbsp;Dashboard</a>
           </li>
-          <li class="">
-          <a href="{ url 'home' %}"><i class="fa "></i>&nbsp;Opportunities</a>
-          </li>
           <li class="divider"></li>
           {% if request.user.is_manager %}
           <li class="has-dropdown"><a href="#">Manage</a>
@@ -70,7 +68,7 @@
           <li class="has-dropdown">
             <a href="#"><i class="fa fa-gears"></i>&nbsp;{{request.user}}</a>
             <ul class="dropdown">
-              <li><a href="">Edit profile</a></li>
+              <li><a href="{% url 'profile-update' %}">Edit profile</a></li>
               <li class="divider"></li>
               <li><a href="{% url 'account_logout' %}"><i class="fa fa-logout"></i>&nbsp;Logout</a></li>
             </ul>

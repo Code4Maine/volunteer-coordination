@@ -70,6 +70,7 @@ class Common(Configuration):
         'taggit',
         'south',
         'braces',
+        'localflavor',
 
         'projects',
         'roles',
