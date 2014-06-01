@@ -65,7 +65,7 @@ class Common(Configuration):
         'floppyforms',
         'taggit',
 
-        'projects',
+        #'projects',
 
     )
 
