@@ -63,3 +63,6 @@ docs/_build/
 venv
 *.sqlite3
 public
+
+## Android App Ignores
+vhubapp/VolunteerHubApp/out/

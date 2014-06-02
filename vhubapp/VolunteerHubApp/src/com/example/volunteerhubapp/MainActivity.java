@@ -1,5 +1,7 @@
 package com.example.VolunteerHubApp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,23 +11,42 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity {
 
     private static TextView tv;
+
+    private static ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +64,12 @@ public class MainActivity extends ActionBarActivity {
      */
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        tv = new TextView(this);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.addContentView(tv, lp);
 
         // Set up the ViewPager with the sections adapter.
         /*
       The {@link ViewPager} that will host the section contents.
      */
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
@@ -98,22 +116,56 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             ViewGroup rootView = null;
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                Thread t = new Thread(new NetworkOperations());
+                rootView = (ViewGroup) inflater.inflate(R.layout.home, container, false);
+                Button login_button = (Button) rootView.findViewById(R.id.login_button);
+                login_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mViewPager.setCurrentItem(1);
+                    }
+                });
+                Button create_account = (Button) rootView.findViewById(R.id.create_account);
+                create_account.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mViewPager.setCurrentItem(2);
+                    }
+                });
+                Button volunteer_projects = (Button) rootView.findViewById(R.id.volunteer_projects);
+                volunteer_projects.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mViewPager.setCurrentItem(0);
+                    }
+                });
+                Thread t = new Thread(new GetOpportunities());
                 t.start();
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-
+                rootView = (ViewGroup) inflater.inflate(R.layout.login, container, false);
+                Button login_submit = (Button) rootView.findViewById(R.id.login_submit);
+                final ViewGroup finalRootView = rootView;
+                login_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText user_email_input = (EditText) finalRootView.findViewById(R.id.textEmailAddress);
+                        String user_email = user_email_input.getText().toString();
+                        EditText user_password_input = (EditText) finalRootView.findViewById(R.id.textPassword);
+                        String user_password = user_password_input.getText().toString();
+                        Thread t = new Thread(new UserLogin(getActivity().getApplicationContext(), user_email, user_password));
+                        t.start();
+                    }
+                });
             } else {
-                rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main,
-                        container, false);
+                rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
             }
             return rootView;
         }
 
-        class NetworkOperations implements Runnable {
+        // /<slug>/opportunities/<slug>.json
+        class GetOpportunities implements Runnable {
 
             // Define the Handler that receives messages from the thread and update the progress
             private final Handler handler = new Handler() {
@@ -151,9 +203,279 @@ public class MainActivity extends ActionBarActivity {
                             e.printStackTrace();
                         }
                     }
-                    JSONObject temp = new JSONObject(builder.toString());
-                    description_parsed = temp.getString("description");
-                    threadMsg(description_parsed);
+                    try {
+                        JSONObject temp = new JSONObject(builder.toString());
+                        description_parsed = temp.getString("description");
+                        threadMsg(description_parsed);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    System.out.println("Exception Stuff");
+                }
+            }
+
+            private void threadMsg(String msg) {
+
+                if (!msg.equals(null) && !msg.equals("")) {
+                    Message msgObj = handler.obtainMessage();
+                    Bundle b = new Bundle();
+                    b.putString("message", msg);
+                    msgObj.setData(b);
+                    handler.sendMessage(msgObj);
+                }
+            }
+        }
+
+        // /accounts/login
+        class UserLogin implements Runnable {
+            private Context context;
+            private String email_address;
+            private String password;
+
+            public UserLogin(Context context, String email_address, String password) {
+                this.context = context;
+                this.email_address = email_address;
+                this.password = password;
+            }
+
+            // Define the Handler that receives messages from the thread and update the progress
+            private final Handler handler = new Handler() {
+                public void handleMessage(Message msg) {
+                    String aResponse = msg.getData().getString("message");
+                    Toast.makeText(context, aResponse, Toast.LENGTH_SHORT).show();
+                }
+            };
+
+            @Override
+            public void run() {
+                HttpClient client = new DefaultHttpClient();
+                HttpContext localContext = new BasicHttpContext();
+
+                // HTTP parameters stores header etc.
+                HttpParams params = new BasicHttpParams();
+                params.setParameter("http.protocol.handle-redirects", false);
+
+                // Create a local instance of cookie store
+                CookieStore cookieStore = new BasicCookieStore();
+
+                // Bind custom cookie store to the local context
+                localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+                // connect and receive
+                HttpPost httpPost = new HttpPost("http://162.243.174.10/accounts/login/");
+                httpPost.setParams(params);
+
+
+                try {
+                    // Add your data
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                    nameValuePairs.add(new BasicNameValuePair("login", this.email_address));
+                    nameValuePairs.add(new BasicNameValuePair("password", this.password));
+                    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                    HttpResponse response = client.execute(httpPost);
+
+                    Header locationHeader = response.getFirstHeader("location");
+                    //If it redirected us, we are ok, it logged us in.
+                    int statusCode = response.getStatusLine().getStatusCode();
+                    if (statusCode == 302) {
+                        //TODO: Redirect user to logged in page
+                        Intent intent = new Intent(context, LoggedInActivity.class);
+                        startActivity(intent);
+                    } else {
+                        //Display toast to to tell the user they fail at passwording
+                        AlertUser("Invalid Username or Password");
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Exception Stuff");
+                }
+            }
+
+            private void AlertUser(String msg) {
+                if (!msg.equals(null) && !msg.equals("")) {
+                    Message msgObj = handler.obtainMessage();
+                    Bundle b = new Bundle();
+                    b.putString("message", msg);
+                    msgObj.setData(b);
+                    handler.sendMessage(msgObj);
+                }
+            }
+        }
+
+        // /accounts/signup
+        class UserCreateAccount implements Runnable {
+
+            // Define the Handler that receives messages from the thread and update the progress
+            private final Handler handler = new Handler() {
+                public void handleMessage(Message msg) {
+                    String aResponse = msg.getData().getString("message");
+                    tv.setText(aResponse);
+                }
+            };
+
+            @Override
+            public void run() {
+                String description_parsed;
+                StringBuilder builder = new StringBuilder();
+                HttpClient client = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(
+                        "http://162.243.174.10/14-elm-street/opportunities/json");
+                try {
+                    HttpResponse response = client.execute(httpGet);
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                    try {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (reader != null) {
+                                reader.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    try {
+                        JSONObject temp = new JSONObject(builder.toString());
+                        description_parsed = temp.getString("description");
+                        threadMsg(description_parsed);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    System.out.println("Exception Stuff");
+                }
+            }
+
+            private void threadMsg(String msg) {
+
+                if (!msg.equals(null) && !msg.equals("")) {
+                    Message msgObj = handler.obtainMessage();
+                    Bundle b = new Bundle();
+                    b.putString("message", msg);
+                    msgObj.setData(b);
+                    handler.sendMessage(msgObj);
+                }
+            }
+        }
+
+        // /projects/<slug>.json
+        class getProjects implements Runnable {
+
+            // Define the Handler that receives messages from the thread and update the progress
+            private final Handler handler = new Handler() {
+                public void handleMessage(Message msg) {
+                    String aResponse = msg.getData().getString("message");
+                    tv.setText(aResponse);
+                }
+            };
+
+            @Override
+            public void run() {
+                String description_parsed;
+                StringBuilder builder = new StringBuilder();
+                HttpClient client = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(
+                        "http://162.243.174.10/14-elm-street/opportunities/json");
+                try {
+                    HttpResponse response = client.execute(httpGet);
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                    try {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (reader != null) {
+                                reader.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    try {
+                        JSONObject temp = new JSONObject(builder.toString());
+                        description_parsed = temp.getString("description");
+                        threadMsg(description_parsed);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    System.out.println("Exception Stuff");
+                }
+            }
+
+            private void threadMsg(String msg) {
+
+                if (!msg.equals(null) && !msg.equals("")) {
+                    Message msgObj = handler.obtainMessage();
+                    Bundle b = new Bundle();
+                    b.putString("message", msg);
+                    msgObj.setData(b);
+                    handler.sendMessage(msgObj);
+                }
+            }
+        }
+
+        // /organizations/<slug>.json
+        class getOrganizations implements Runnable {
+
+            // Define the Handler that receives messages from the thread and update the progress
+            private final Handler handler = new Handler() {
+                public void handleMessage(Message msg) {
+                    String aResponse = msg.getData().getString("message");
+                    tv.setText(aResponse);
+                }
+            };
+
+            @Override
+            public void run() {
+                String description_parsed;
+                StringBuilder builder = new StringBuilder();
+                HttpClient client = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(
+                        "http://162.243.174.10/14-elm-street/opportunities/json");
+                try {
+                    HttpResponse response = client.execute(httpGet);
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                    try {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (reader != null) {
+                                reader.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    try {
+                        JSONObject temp = new JSONObject(builder.toString());
+                        description_parsed = temp.getString("description");
+                        threadMsg(description_parsed);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     System.out.println("Exception Stuff");
                 }
@@ -209,5 +531,13 @@ public class MainActivity extends ActionBarActivity {
             }
             return null;
         }
+    }
+
+    public void showToast(final String toast) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
