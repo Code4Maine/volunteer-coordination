@@ -6,6 +6,8 @@
 {% block head_title %}{% trans "Account Connections" %}{% endblock %}
 
 {% block content %}
+<div class="row">
+<div class="large-12 columns">
 <h1>{% trans "Account Connections" %}</h1>
 
 {% if form.accounts %}
@@ -51,5 +53,6 @@
 </ul>
 
 {% include "socialaccount/snippets/login_extra.html" %}
-
+</div>
+</div>
 {% endblock %}

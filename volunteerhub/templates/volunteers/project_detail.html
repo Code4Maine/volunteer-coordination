@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% load volunteer_tags %}
 
 
 {% block content %}
+<div class="row">
+<div class="large-12 columns">
 
 <h3>Project</h3>
 <h2>{{object.title}}</h2>
@@ -12,6 +15,15 @@
   <p>{{object.description}}</p>
 </div>
 
+{% manager_of object.organization request.user as manager %}
+{% lead_volunteer_of object request.user as lead %}
+{% if manager or lead %}
+<h3>Your volunteers</h3>
+{% for app in project.volunteerapplication_set.all %}
+{{app.volunteer}}
+{% endfor %}
+{% endif %}
+
 <h3>Find a way to help!</h3>
     {% for obj in object.opportunity_set.all %}
 <div class="">
@@ -19,4 +31,6 @@
     <p>{{obj.description}}</p>
 </div>
     {% endfor %}
+</div>
+</div>
 {% endblock %}

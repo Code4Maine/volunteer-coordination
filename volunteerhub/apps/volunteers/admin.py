@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Organization, LaborType, Opportunity, Location,
-                     Project)
+                     Project, VolunteerApplication, Volunteer)
 
 
 class SlugAdmin(admin.ModelAdmin):
@@ -18,3 +18,5 @@ admin.site.register(LaborType)
 admin.site.register(Opportunity)
 admin.site.register(Organization)
 admin.site.register(Project)
+admin.site.register(VolunteerApplication)
+admin.site.register(Volunteer)
