@@ -19,13 +19,14 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://C:/adt-bundle-windows-x86_64-20140321/sdk/extras/android/support/v7/appcompat/libs" />
+          <root url="file://$USER_HOME$/android-sdk/extras/android/support/v7/appcompat/libs" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://C:/adt-bundle-windows-x86_64-20140321/sdk/extras/android/support/v7/appcompat/libs" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/android-sdk/extras/android/support/v7/appcompat/libs" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jsoup-1.7.3" level="project" />
   </component>
 </module>
 

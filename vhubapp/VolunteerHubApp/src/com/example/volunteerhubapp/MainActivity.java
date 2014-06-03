@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -41,10 +43,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 public class MainActivity extends ActionBarActivity {
-
     private static TextView tv;
+    private static Button loginButton;
 
     private static ViewPager mViewPager;
 
@@ -145,9 +150,9 @@ public class MainActivity extends ActionBarActivity {
                 t.start();
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 rootView = (ViewGroup) inflater.inflate(R.layout.login, container, false);
-                Button login_submit = (Button) rootView.findViewById(R.id.login_submit);
+                loginButton = (Button) rootView.findViewById(R.id.login_submit);
                 final ViewGroup finalRootView = rootView;
-                login_submit.setOnClickListener(new View.OnClickListener() {
+                loginButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         EditText user_email_input = (EditText) finalRootView.findViewById(R.id.textEmailAddress);
@@ -246,9 +251,26 @@ public class MainActivity extends ActionBarActivity {
                     Toast.makeText(context, aResponse, Toast.LENGTH_SHORT).show();
                 }
             };
+            private final Handler buttonHandler = new Handler() {
+                public void handleMessage(Message msg) {
+                    String aResponse = msg.getData().getString("message");
+                    if(loginButton == null)
+                        return;
+                    if(aResponse == "lock"){
+                        loginButton.setEnabled(false);
+                        loginButton.setText("Logging In");
+                    } else {
+                        loginButton.setEnabled(true);
+                        loginButton.setText("Login");
+                    }
+                }
+            };
 
             @Override
             public void run() {
+                LockButton();
+                String token = GetCSRFToken();
+
                 HttpClient client = new DefaultHttpClient();
                 HttpContext localContext = new BasicHttpContext();
 
@@ -258,6 +280,10 @@ public class MainActivity extends ActionBarActivity {
 
                 // Create a local instance of cookie store
                 CookieStore cookieStore = new BasicCookieStore();
+                BasicClientCookie token_cookie = new BasicClientCookie("csrftoken", token);
+                token_cookie.setDomain("162.243.174.10");
+                token_cookie.setPath("/");
+                cookieStore.addCookie(token_cookie);
 
                 // Bind custom cookie store to the local context
                 localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -270,29 +296,57 @@ public class MainActivity extends ActionBarActivity {
                 try {
                     // Add your data
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+
+                    this.email_address = "poo@poo.com";
+                    this.password = "test123";
+
                     nameValuePairs.add(new BasicNameValuePair("login", this.email_address));
                     nameValuePairs.add(new BasicNameValuePair("password", this.password));
+                    nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", token));
                     httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-                    HttpResponse response = client.execute(httpPost);
+                    HttpResponse response = client.execute(httpPost,localContext);
 
-                    Header locationHeader = response.getFirstHeader("location");
                     //If it redirected us, we are ok, it logged us in.
                     int statusCode = response.getStatusLine().getStatusCode();
                     if (statusCode == 302) {
-                        //TODO: Redirect user to logged in page
                         Intent intent = new Intent(context, LoggedInActivity.class);
                         startActivity(intent);
-                    } else {
-                        //Display toast to to tell the user they fail at passwording
+                    } else if(statusCode == 200) {
                         AlertUser("Invalid Username or Password");
+                    } else {
+                        AlertUser("An error occurred, the error code was: " + statusCode);
                     }
-
                 } catch (Exception e) {
                     System.out.println("Exception Stuff");
                 }
+                UnlockButton();
             }
+            private String GetCSRFToken(){
+                try {
+                    Document doc = Jsoup.connect("http://162.243.174.10/accounts/login/").get();
+                    Elements csrf = doc.select("input[name=csrfmiddlewaretoken]");
+                    return csrf.val();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
+                return "";
+            }
+            private void LockButton() {
+                Message msgObj = buttonHandler.obtainMessage();
+                Bundle b = new Bundle();
+                b.putString("message", "lock");
+                msgObj.setData(b);
+                buttonHandler.sendMessage(msgObj);
+            }
+            private void UnlockButton() {
+                Message msgObj = buttonHandler.obtainMessage();
+                Bundle b = new Bundle();
+                b.putString("message", "");
+                msgObj.setData(b);
+                buttonHandler.sendMessage(msgObj);
+            }
             private void AlertUser(String msg) {
                 if (!msg.equals(null) && !msg.equals("")) {
                     Message msgObj = handler.obtainMessage();

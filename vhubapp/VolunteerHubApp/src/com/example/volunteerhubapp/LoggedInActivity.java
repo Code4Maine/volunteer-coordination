@@ -9,7 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 public class LoggedInActivity extends ActionBarActivity {
 
     @Override
-    protected void onCreate(Bundle bundle){
+    protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.logged_in);
 
