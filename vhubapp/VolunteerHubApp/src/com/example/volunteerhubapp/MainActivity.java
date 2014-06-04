@@ -1,4 +1,4 @@
-package com.example.VolunteerHubApp;
+package com.example.volunteerhubapp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +46,8 @@ import java.util.Locale;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import com.example.VolunteerHubApp.R;
 
 public class MainActivity extends ActionBarActivity {
     private static TextView tv;
