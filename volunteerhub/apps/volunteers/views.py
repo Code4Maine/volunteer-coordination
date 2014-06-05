@@ -7,7 +7,7 @@ from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect
-from .forms import ProfileForm, ProjectForm
+from .forms import VolunteerForm, ProjectForm, OrganizationForm
 
 from .models import (Opportunity, Project, Organization, Volunteer,
                      VolunteerApplication)
@@ -29,7 +29,7 @@ def get_nearby_opportunities(request, *args, **kwargs):
         #  TODO: Search close and go out until we find a
         #  threshold of opportunities
         meters = 5000
-        opportunities = Opportunity.objects.filter(
+        OrganizationMixin, opportunities = Opportunity.objects.filter(
             point__distance_lte=(current_point, D(m=meters)))
         if getattr(request.GET, 'json', False):
             data = serializers.serialize('json', opportunities)
@@ -38,6 +38,21 @@ def get_nearby_opportunities(request, *args, **kwargs):
             html = render_to_string('volunteers/_opportunity_list.html',
                                     {'object_list': opportunities})
             return HttpResponse(html, mimetype='text/html')
+
+
+def change_organization(request):
+    if 'POST' == request.method:
+        new_org = request.POST.get('new_org')
+        if new_org:
+            current_organization = Organization.objects.get(id=new_org)
+            request.session['current_organization'] = str(current_organization.id)
+            request.session['{0}_slug'.format(
+                'current_organization')] = current_organization.slug
+            redirect_url = request.POST.get('redirect_to', '/dashboard')
+            if redirect_url:
+                return redirect(redirect_url)
+            else:
+                return redirect('/dashboard')
 
 
 class JsonView(views.CsrfExemptMixin,
@@ -187,10 +202,14 @@ class OrganizationDetailView(DetailView):
     model = Organization
 
 
-class DashboardView(DetailView):
-    ''' DashboardView
+class OrganizationCreateView(CreateView):
+    model = Organization
 
     
+
+
+class DashboardView(DetailView):
+    ''' DashboardView
     '''
     model = Volunteer
     template_name = 'volunteers/dashboard.html'
@@ -202,13 +221,16 @@ class DashboardView(DetailView):
         context = super(DashboardView, self).get_context_data(*args, **kwargs)
         context['applications'] = VolunteerApplication.objects.filter(
             user=self.request.user)
+        context['org_form'] = OrganizationForm
+        context['user_orgs'] = Organization.objects.filter(
+            managers=self.request.user)
         return context
 
 
 class ProfileUpdateView(UpdateView):
     model = Volunteer
     template_name = 'volunteers/profile_update.html'
-    form_class = ProfileForm
+    form_class = VolunteerForm
 
     def get_object(self, *args, **kwargs):
         return self.request.user

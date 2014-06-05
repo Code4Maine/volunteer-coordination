@@ -25,7 +25,7 @@
 {% endif %}
 
 <h3>Find a way to help!</h3>
-    {% for obj in object.opportunity_set.all %}
+{% for obj in object.opportunity_set.all %}
 <div class="">
     <h4><a href="{{ obj.get_absolute_url }}">{{obj.title}}</a></h4>
     <p>{{obj.description}}</p>

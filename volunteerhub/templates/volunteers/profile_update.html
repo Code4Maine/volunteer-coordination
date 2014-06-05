@@ -7,9 +7,11 @@
 
 <h2>Profile</h2>
 
+<form method="post">{% csrf_token %}
 {{form.as_p}}
 
-<button>Save</button>
+<input type="submit" value="Save" class="button" />
+</form>
 </div>
 </div>
 {% endblock %}

@@ -1,2 +1,4 @@
 .app-box { padding:1em; margin:5px; float:left; width:260px; height:200px; }
 .label { font-size:12pt; }
+.sidebar { margin-top:1em; }
+.content { margin-top:1em; }
