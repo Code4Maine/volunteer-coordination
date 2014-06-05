@@ -1,0 +1,467 @@
+package com.boopathy.raja.tutorial;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
+import com.boopathy.raja.tutorial.R;
+import com.boopathy.raja.tutorial.animation.Animation;
+import com.boopathy.raja.tutorial.arc.Arc;
+import com.boopathy.raja.tutorial.canvas.Paint;
+import com.boopathy.raja.tutorial.chart.Chart;
+import com.boopathy.raja.tutorial.dragdrop.DragDrop;
+import com.boopathy.raja.tutorial.home.Home;
+import com.boopathy.raja.tutorial.listview.List;
+import com.boopathy.raja.tutorial.magical.MagicalTextView;
+import com.boopathy.raja.tutorial.map.Map;
+import com.boopathy.raja.tutorial.picker.Picker;
+import com.boopathy.raja.tutorial.popup.PopUp;
+import com.boopathy.raja.tutorial.text2speech.Text2Speech;
+import com.boopathy.raja.tutorial.viewflow.ViewFlow;
+import com.boopathy.raja.tutorial.wheel.Android_Wheel;
+
+public class MainActivity extends SherlockFragmentActivity 
+{
+	DrawerLayout mDrawerLayout;
+	ListView mDrawerList;
+	ActionBarDrawerToggle mDrawerToggle;
+	MenuListAdapter mMenuAdapter;
+	
+	Fragment home = new Home();
+	Fragment animation = new Animation();
+	Fragment arc = new Arc();
+	Fragment chart = new Chart();
+	Fragment dragdrop = new DragDrop();
+	Fragment list = new List();
+	Fragment magic = new MagicalTextView();
+	Fragment map = new Map();
+	Fragment paint = new Paint();
+	Fragment picker = new Picker();
+	Fragment popup = new PopUp();
+	Fragment text2speech = new Text2Speech();	
+	Fragment viewflow = new ViewFlow();
+	Fragment wheel = new Android_Wheel();
+	
+	private CharSequence mDrawerTitle;
+	private CharSequence mTitle;
+	String[] title, subtitle;
+	int[] icon;	
+
+	NotificationManager mNotifyManager;
+	NotificationCompat.Builder mBuilder;
+	String dwnload_file_path = "http://www.boopathyraja.com/Android_UI_Design.zip";
+	Boolean isInternetPresent = false;	
+	int total = 0, count;
+	public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+	private ProgressDialog mProgressDialog;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) 
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.drawer_main);
+		getSupportActionBar().setIcon(R.drawable.ic_launcher);
+		
+		Rate_Application.app_launched(this);
+		
+		mBuilder = new NotificationCompat.Builder(this);
+		
+		mTitle = mDrawerTitle = getTitle();
+		title = new String[] {"Android UI Design", "Animations", "Arc Menu", "Chart", "Drag & Drop", "ListView", "Magical TextView", "Map", "Paint", "Picker", "PopUp", "Text 2 Speech", "ViewFlow", "Wheel"};
+		subtitle = new String[] {"Home", "Animation using XML", "Example on Arc Menu", "Example on Chart", "Example on Drag & Drop", "Example on ListView", "Example on Magical TextView", "Example on Map", "Example on Paint", "Example on Picker", "Example on PopUp", "Example on Text 2 Speech", "Example on ViewFlow", "Example on Wheel"};
+		icon = new int[] {R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample, R.drawable.sample};
+
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerList = (ListView) findViewById(R.id.listview_drawer);
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+		mMenuAdapter = new MenuListAdapter(MainActivity.this, title, subtitle, icon);
+		mDrawerList.setAdapter(mMenuAdapter);
+
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) 
+		{
+			public void onDrawerClosed(View view) 
+			{
+				super.onDrawerClosed(view);
+			}
+
+			public void onDrawerOpened(View drawerView) 
+			{
+				getSupportActionBar().setTitle(mDrawerTitle);
+				super.onDrawerOpened(drawerView);
+			}
+		};
+
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+		if (savedInstanceState == null) 
+		{
+			selectItem(0);
+		}
+	}
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+	{
+        SubMenu sub = menu.addSubMenu("Options");
+        sub.add(0, 1, 0, "SourceCode");
+        sub.add(0, 2, 0, "Rate App");
+        sub.add(0, 3, 0, "Exit");
+        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        return true;
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) 
+	{
+		if (item.getItemId() == android.R.id.home) 
+		{
+			if (mDrawerLayout.isDrawerOpen(mDrawerList)) 
+			{
+				mDrawerLayout.closeDrawer(mDrawerList);
+			}
+			else 
+			{
+				mDrawerLayout.openDrawer(mDrawerList);
+			}
+		}
+		
+		switch (item.getItemId()) 
+		{
+			case 1:			
+				ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
+		    	isInternetPresent = cd.isConnectingToInternet();
+			
+		    	if(isInternetPresent)
+		    	{	    		
+		    		//new show().execute();
+		    		new DownloadFileAsync().execute();
+		    	}
+		    	else
+		    	{
+		    		Toast.makeText(getApplicationContext(), "Enable Data Connection", Toast.LENGTH_LONG).show();
+		    	}
+				break;
+				
+			case 2:
+				Rate_Application.showRateDialog(this, null);
+				break;
+				
+			case 3:
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+        		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        		intent.addCategory(Intent.CATEGORY_HOME);
+        		startActivity(intent);
+        		finish();
+				break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private class DrawerItemClickListener implements ListView.OnItemClickListener 
+	{
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,	long id) 
+		{
+			selectItem(position);
+		}
+	}
+
+	private void selectItem(int position) 
+	{
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		switch (position) 
+		{
+			case 0:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, home);
+				break;
+				
+			case 1:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, animation);
+				break;
+				
+			case 2:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, arc);
+				break;
+				
+			case 3:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, chart);
+				break;
+				
+			case 4:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, dragdrop);
+				break;
+				
+			case 5:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, list);
+				break;
+				
+			case 6:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, magic);
+				break;
+				
+			case 7:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, map);
+				break;
+				
+			case 8:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, paint);
+				break;
+				
+			case 9:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, picker);
+				break;
+				
+			case 10:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, popup);
+				break;
+				
+			case 11:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, text2speech);
+				break;
+				
+			case 12:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, viewflow);
+				break;
+				
+			case 13:
+				setTitle(title[position]);
+				ft.replace(R.id.content_frame, wheel);
+				break;
+		}
+		ft.commit();
+		mDrawerList.setItemChecked(position, true);
+		setTitle(title[position]);
+		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) 
+	{
+		super.onPostCreate(savedInstanceState);
+		mDrawerToggle.syncState();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) 
+	{
+		super.onConfigurationChanged(newConfig);
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public void setTitle(CharSequence title) 
+	{
+		mTitle = title;
+		getSupportActionBar().setTitle(mTitle);
+	}
+	
+	@Override
+	public void onBackPressed() 
+	{
+		Toast.makeText(getApplicationContext(), "Use Options->Exit", Toast.LENGTH_LONG).show();
+	}
+	
+	class show extends AsyncTask<String, String, String>
+	{		
+		protected String doInBackground(String... arg0)
+		{
+			String urlLink = dwnload_file_path;
+			String fileName = "1.zip";
+			
+			File root = android.os.Environment.getExternalStorageDirectory();
+			File dir = new File(root.getAbsolutePath() + "/Android UI Design/");
+			if (dir.exists() == false) 
+			{
+				dir.mkdirs();
+			}
+
+			mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mBuilder = new NotificationCompat.Builder(getApplicationContext());
+			mBuilder.setContentTitle("Android UI Design").setContentText("Download in progress").setSmallIcon(R.drawable.ic_launcher);
+			
+			try
+			{
+				URL url = new URL(urlLink);
+				URLConnection connection = url.openConnection();
+				connection.connect();
+				final int fileLength = connection.getContentLength();
+
+				InputStream input = new BufferedInputStream(url.openStream());
+				OutputStream output = new FileOutputStream(dir + "/" + fileName);
+				
+				byte data[] = new byte[1024];
+				
+				while ((count = input.read(data)) != -1)
+				{
+					output.write(data, 0, count);
+					total += count;
+					
+					new Thread(new Runnable() 
+					{
+						@Override
+						public void run() 
+						{
+							float per = ((float) total / fileLength) * 100;
+							mBuilder.setContentTitle("Android UI Design").setContentText("Downloaded " + total + "KB / " + fileLength + "KB (" + (int) per + "%)").setSmallIcon(R.drawable.ic_launcher);
+							mBuilder.setProgress(fileLength, total, false);
+							mNotifyManager.notify(96882, mBuilder.build());
+			
+							if(total == fileLength)
+							{
+								mBuilder.setContentText("Download complete").setProgress(0, 0, false);
+								mNotifyManager.notify(96882, mBuilder.build());
+							}
+							
+							try 
+							{
+								Thread.sleep(5 * 1000);
+							}
+							catch (InterruptedException e) 
+							{
+								System.out.println(e);
+							}
+						}
+					}).start();
+				}
+				output.flush();
+				output.close();
+				input.close();
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e);
+			}			
+			return null;
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) 
+	{
+		switch (id) 
+		{
+			case DIALOG_DOWNLOAD_PROGRESS:
+				mProgressDialog = new ProgressDialog(this);
+				mProgressDialog.setMessage("Downloading Android UI Desgin - Souce Code");
+				mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				mProgressDialog.setCancelable(false);
+				mProgressDialog.show();
+				return mProgressDialog;
+				
+			default:
+				return null;
+		}
+	}
+	
+	@SuppressLint("SdCardPath")
+	class DownloadFileAsync extends AsyncTask<String, String, String> 
+	{
+		@SuppressWarnings("deprecation")
+		@Override
+		protected void onPreExecute() 
+		{
+			super.onPreExecute();
+			showDialog(DIALOG_DOWNLOAD_PROGRESS);
+		}
+
+		@Override
+		protected String doInBackground(String... args) 
+		{			
+			String urlLink = dwnload_file_path;
+			String fileName = "Android UI Design.zip";
+			
+			File root = android.os.Environment.getExternalStorageDirectory();
+			File dir = new File(root.getAbsolutePath() + "/Android UI Design/");
+			if (dir.exists() == false) 
+			{
+				dir.mkdirs();
+			}
+
+			try 
+			{
+				URL url = new URL(urlLink);
+				URLConnection connection = url.openConnection();
+				connection.connect();
+				int fileLength = connection.getContentLength();
+
+				InputStream input = new BufferedInputStream(url.openStream());
+				OutputStream output = new FileOutputStream(dir + "/" + fileName);
+
+				byte data[] = new byte[1024];
+				long total = 0;
+				int count;
+				while ((count = input.read(data)) != -1)
+				{
+					total += count;
+					publishProgress(""+(int)((total*100)/fileLength));
+					output.write(data, 0, count);
+				}
+				output.flush();
+				output.close();
+				input.close();			
+			}
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}			
+			return null;
+		}
+
+		protected void onProgressUpdate(String... progress) 
+		{
+			mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		protected void onPostExecute(String unused) 
+		{
+			dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+		}
+	}
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/listview_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:padding="20dip" />
+
+    <LinearLayout
+        android:id="@+id/listview_toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:layout_marginBottom="-50dip"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/list_do1"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="Toast 1" />
+
+        <Button
+            android:id="@+id/list_do2"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="Toast 2" />
+    </LinearLayout>
+
+</LinearLayout>
