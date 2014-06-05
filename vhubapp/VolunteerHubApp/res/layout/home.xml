@@ -21,7 +21,7 @@
         android:src="@drawable/volunteerhub_logo" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView1"
@@ -30,19 +30,19 @@
         android:text="Login" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/create_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/login_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
         android:text="Create Account" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/volunteer_projects"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button3"
+        android:layout_below="@+id/create_account"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
         android:text="Volunteer Projects Around Me" />

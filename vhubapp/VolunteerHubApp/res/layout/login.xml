@@ -18,14 +18,48 @@
         android:layout_width="500dp"
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
-        android:src="@drawable/volunteerhub_logo" />
-
+        android:src="@drawable/volunteerhub_logo"
+        android:layout_centerHorizontal="true" />
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Login Screen" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="E-Mail Address"
+            android:id="@+id/EMailAddress" android:layout_below="@+id/imageView1" android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/textEmailAddress"
+            android:layout_marginTop="35dp"
+            android:layout_below="@+id/EMailAddress"
+            android:layout_alignParentRight="true" android:layout_alignParentLeft="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Password"
+            android:id="@+id/Password"
+            android:layout_below="@id/textEmailAddress"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:layout_marginTop="35dp"
+            android:id="@+id/textPassword" android:layout_below="@+id/Password" android:layout_centerHorizontal="true"
+            android:layout_alignParentRight="true" android:layout_alignParentLeft="true" />
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:layout_below="@id/textPassword"
+            android:id="@+id/login_submit" android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"/>
+
 
 </RelativeLayout>

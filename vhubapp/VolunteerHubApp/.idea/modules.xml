@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VolunteerHubApp.iml" filepath="$PROJECT_DIR$/VolunteerHubApp.iml" />
-      <module fileurl="file://C:/adt-bundle-windows-x86_64-20140321/sdk/extras/android/support/v7/appcompat/android-support-v7-appcompat.iml" filepath="C:/adt-bundle-windows-x86_64-20140321/sdk/extras/android/support/v7/appcompat/android-support-v7-appcompat.iml" />
+      <module fileurl="file://$USER_HOME$/android-sdk/extras/android/support/v7/appcompat/android-support-v7-appcompat.iml" filepath="$USER_HOME$/android-sdk/extras/android/support/v7/appcompat/android-support-v7-appcompat.iml" />
     </modules>
   </component>
 </project>
