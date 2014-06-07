@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.boopathy.raja.tutorial.R;
 
 public class Expand_Custom_ListView extends SherlockActivity 
 {
