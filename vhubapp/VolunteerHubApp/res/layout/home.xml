@@ -18,7 +18,8 @@
         android:layout_width="500dp"
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
-        android:src="@drawable/volunteerhub_logo" />
+        android:src="@drawable/volunteerhub_logo"
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:id="@+id/login_button"
