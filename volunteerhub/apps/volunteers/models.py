@@ -141,6 +141,11 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
         else:
             return False
 
+    @property
+    def app_count(self):
+        return len(VolunteerApplication.objects.filter(
+            opportunity=self))
+
 
 class Volunteer(TimeStampedModel):
     '''
@@ -164,6 +169,10 @@ class Volunteer(TimeStampedModel):
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
+
+    @permalink
+    def get_absolute_url(self):
+        return ('dashboard')
 
 
 APP_STATUSES = (('pending', 'Pending'),

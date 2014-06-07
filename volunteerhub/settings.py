@@ -80,7 +80,8 @@ class Common(Configuration):
         ("django.core.context_processors.request",
          "django.core.context_processors.tz",
          "allauth.account.context_processors.account",
-         "allauth.socialaccount.context_processors.socialaccount",)
+         "allauth.socialaccount.context_processors.socialaccount",
+         "volunteers.context_processors.organization_loader")
 
     MIDDLEWARE_CLASSES = (
         "django.contrib.sessions.middleware.SessionMiddleware",
@@ -166,13 +167,8 @@ class Common(Configuration):
     # Account activations automatically expire after this period
     ACCOUNT_ACTIVATION_DAYS = 14
 
-    LOGIN_EXEMPT_URLS = ['', '/',
-                         '/accounts/login/',
-                         'login',
-                         '/accounts/signup/']
-
     LOGIN_URL = '/accounts/login/'
-    LOGIN_REDIRECT_URL = '/'
+    LOGIN_REDIRECT_URL = '/dashboard/'
     LOGOUT_URL = '/accounts/logout/'
 
     # A sample logging configuration. The only tangible logging

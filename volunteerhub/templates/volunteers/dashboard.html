@@ -4,32 +4,45 @@
 
 {% block content %}
 <div class="row">
-<div class="large-6 columns">
+<div class="large-8 columns content">
 
-{% for org in request.user.organization_set.all %}
-{% if forloop.first %}
-{% manager_of org user as manager %}
+{% if current_organization %}
+<h2>{{current_organization.title}}</h2>
+<p>Welcome! This is your dashboard. Here you'll be able to:</p>
+<ul>
+    <li>Create new projects</li>
+    <li>Review volunteer applications</li>
+    <li>Track the status of projects</li>
+    <li>Update your organization information</li>
+</ul>
+{% endif %}
+
+{{current_organization.project_set.all}}
+{% manager_of current_organization user as manager %}
 {% if manager %}
-<h2>Waiting for review</h2>
-{% for opp in org.opportunity_set.all %}
+<h2>Applications for review</h2>
+{% for project in current_organization.projects.all %}
+{% for opp in project.opportunity_set.all %}
+{% if opp.volunteerapplication_set.all %}
+<h4>{{opp.title}} for {{opp.project.title}}</h4>
+{% endif %}
 {% for app in opp.volunteerapplication_set.all %}
 {% if app.status == 'pending' %}
-{{app}}
+<div>
+    <h4><a href="{{app.get_absolute_url}}">{{app.user}}&nbsp;<span class="label">{{app.status}}</span></h4>
+</div>
 {% endif %}
-{% endfor %}
-{% endfor %}
-
-{% endif %}
-{% else %}
-<p>No applications waiting for review</p>
-{% endif %}
-{% endfor %}
 <hr />
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+{% endif %}
 
 
 
+<h2>Open applications</h2>
 {% if applications %}
-<h2>My applications</h2>
 {% for app in applications %}
 <div class="app-box">
   <h4><a href="{{app.opportunity.get_absolute_url}}">{{app.opportunity.title}}</a></h4>
@@ -39,21 +52,61 @@
 <hr />
 {% endfor %}
 {% else %}
-<p>No open applications</p>
+<p>No applications, <a href="{% url 'project-list' %}">find an opportunity</a>!</p>
 <hr />
 {% endif %}
 
-</div>
-<div class="large-6 columns">
+{% if not current_organization %}
 
-<h2>My projects</h2>
+<h2>Start your own projects!</h2>
+<p>Interested in posting opportunities for your own organization? Need volunteers
+for an important project you have coming up? Fill out the form below and start
+making connections!</p>
+
+<hr />
+
+<form method="post" action="{% url 'organization-create' %}">
+    {% csrf_token %}
+    {{org_form.as_p}}
+    <input type="submit" class="button" value="Create" />
+</form>
+{% endif %}
+
+</div>
+<div class="large-4 columns sidebar">
+
+{% if user_orgs|length > 2 %}
+<form name='org_picker' method='post'
+      action="{% url 'change-organization' %}">
+  {% csrf_token %}
+
+  <input type="hidden" name="redirect_to" value="{{ request.path }}" />
+
+  <select id="org_picker" name="new_org">
+    {% for org in user_orgs %}
+    <option value="{{ org.id }}"
+        {% if org.id == current_organization %}
+        selected="selected"
+        {% endif %}>{{ org.title }}</option>
+    {% endfor %}
+  </select>
+</form>
+{% endif %}
+
+
+<h3>Your volunteer profile needs more information!</h3>
+<h2>Open projects & opportunities</h2>
 {% for org in request.user.organization_set.all %}
 {% manager_of org user as manager %}
 {% if manager %}
 {% for project in org.projects.all %}
 {% if not project.fulfilled %}
-<span class="label">{{org.title}}</span>
 <p><a href="{{project.get_absolute_url}}">{{project.title}}</a></p>
+<ul>
+{% for opp in project.opportunity_set.all %}
+<li>{{opp.title}}&nbsp;<span class="label">{{opp.app_count}}</span></li>
+{% endfor %}
+</ul>
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -62,15 +115,6 @@
 <hr />
 {% endif %}
 {% endfor %}
-
-<h2>Profile</h2>
-
-<p>Name: {{object.volunteer.name}}</p>
-<p>Email: {{object}}</p>
-<p>Phone: {{object.volunteer.phone_number}}</p>
-<p>Address: {{object.address}}</p>
-
-<button>Edit</button>
 </div>
 </div>
 {% endblock %}

@@ -3,7 +3,8 @@ from .views import (OpportunityDetailView, ProjectListView,
                     ProjectDetailView, ProjectListJSONView,
                     ProjectDetailJSONView, OpportunityDetailJSONView,
                     DashboardView, ProfileUpdateView, ProjectCreateView,
-                    OpportunityVolunteerView, OpportunityUnVolunteerView)
+                    OpportunityVolunteerView, OpportunityUnVolunteerView,
+                    OrganizationCreateView)
 
 # custom views
 urlpatterns = patterns(
@@ -35,6 +36,10 @@ urlpatterns = patterns(
     url(r'^projects/add/(?P<slug>[-\w]+)/',
         view=ProjectCreateView.as_view(),
         name="project-create"),
+
+    url(r'^organization/add/',
+        view=OrganizationCreateView.as_view(),
+        name="organization-create"),
 
 
     url(r'^projects.json',
