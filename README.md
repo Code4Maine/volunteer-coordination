@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/mainecivichackday/volunteer-coordination.png?label=ready&title=Ready)](https://waffle.io/mainecivichackday/volunteer-coordination)
 VolunteerHub
 ============
 www.VolunteerHub.me
