@@ -1,6 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/mainecivichackday/volunteer-coordination.png?label=ready&title=Ready)](https://waffle.io/mainecivichackday/volunteer-coordination)
 VolunteerHub
 ============
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Code4Maine/volunteer-coordination?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 www.VolunteerHub.me
 
 Volunteer Hub is a volunteer coordination system that allows organizations to create projects and opportunities that people can then browse and select to volunteer for the organizations.
