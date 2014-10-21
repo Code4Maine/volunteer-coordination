@@ -1,0 +1,15 @@
+---
+server: www.volunteerhub.me
+domainname: www.volunteerhub.me
+mode: Dev
+deployment_name: volunteerhub
+locale: en_US.UTF-8
+timezone: America/New_York
+project_repo: git@github.com:code4maine/volunteer-coordination.git
+branch: master
+dbpass: lkj;zxlvjoasdjok3lkwjelfksjdlfkjlsdf
+port_number: 30000
+postgis: True
+bower: False
+sentry_key: None
+secret_key: kjlzxlkJLSKJLE>SDLjpjef-ojwelksjdfkzjxlfJDFKLDKJf

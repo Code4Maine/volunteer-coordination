@@ -66,3 +66,4 @@ public
 
 ## Android App Ignores
 vhubapp/VolunteerHubApp/out/
+ansible/host_vars

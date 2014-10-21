@@ -34,6 +34,8 @@ class Common(Configuration):
         'taggit': 'taggit.south_migrations',
     }
 
+    POSTGIS_VERSION = (2, 1, 0)
+
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -43,6 +45,8 @@ class Common(Configuration):
     TEMPLATE_DEBUG = False
 
     ALLOWED_HOSTS = []
+
+    ROOT_URLCONF = 'volunteerhub.urls'
 
     # Application definition
 
@@ -107,7 +111,6 @@ class Common(Configuration):
         "django.contrib.auth.backends.ModelBackend",
         "allauth.account.auth_backends.AuthenticationBackend",)
 
-    ROOT_URLCONF = 'volunteerhub.urls'
 
     WSGI_APPLICATION = 'volunteerhub.wsgi.application'
 
@@ -201,17 +204,11 @@ class Dev(Common):
     """
     DEBUG = TEMPLATE_DEBUG = True
 
-    DATABASES = values.DatabaseURLValue(
-        'postgis://localhost/vhub')
+    DATABASES = values.DatabaseURLValue('postgis://vhub:mainroot@localhost/vhub')
 
     SECRET_KEY = 'notasecretatall'
 
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-    INSTALLED_APPS = Common.INSTALLED_APPS + ('debug_toolbar',)
-
-    MIDDLEWARE_CLASSES = Common.MIDDLEWARE_CLASSES + (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 
 class Stage(Common):
@@ -222,7 +219,7 @@ class Prod(Common):
     """
     The in-production settings.
     """
-    DEBUG = TEMPLATE_DEBUG = False
+    DEBUG = TEMPLATE_DEBUG = True
 
     SECRET_KEY = values.SecretValue()
 
