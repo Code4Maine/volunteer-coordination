@@ -204,7 +204,7 @@ class Dev(Common):
     """
     DEBUG = TEMPLATE_DEBUG = True
 
-    DATABASES = values.DatabaseURLValue('postgis://vhub:mainroot@localhost/vhub')
+    DATABASES = values.DatabaseURLValue('spatialite:///{0}'.format(os.path.join(Common.BASE_DIR, 'db.sqlite3'), environ=True))
 
     SECRET_KEY = 'notasecretatall'
 
