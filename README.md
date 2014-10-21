@@ -46,7 +46,7 @@ module using easy_install or pip.
 
 Once you've got those, simply type:
 
-  $ vagrant up
+    $ vagrant up
 
 In the project's home directory. The ansible provisioner goes about it's
 business bootstrapping an Ubuntu 14.04 LTS virtual machine for the project.
@@ -54,12 +54,12 @@ business bootstrapping an Ubuntu 14.04 LTS virtual machine for the project.
 You may then edit code directly on your computer in the project home directory.
 But to see changes reflected on the virtual machine you will have to:
 
-  $ vagrant ssh
-  $ sudo restart volunteerhub_Dev
+    $ vagrant ssh
+    $ sudo restart volunteerhub_Dev
 
 You could also "reprovision" the virutalbox like so:
 
-  $ vagrant provision
+    $ vagrant provision
 
 Because ansible is indempodent, nothing will be changed but what needs to be
 changed and the application will be restarted.
