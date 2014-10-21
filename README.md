@@ -4,8 +4,8 @@ VolunteerHub
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Code4Maine/volunteer-coordination?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Stories in Ready](https://badge.waffle.io/code4maine/volunteer-coordination.png?label=ready&title=Ready)](https://waffle.io/code4maine/volunteer-coordination)
 
-Use the "Ready" badge above to scope out open issues and see you can help. And
-be sure to join us in the Gitter chat room too.
+*Use the "Ready" badge above to scope out open issues and see you can help. And
+be sure to join us in the Gitter chat room too.*
 
 Volunteer Hub is a volunteer coordination system that allows organizations to 
 create projects and opportunities that people can then browse and select to 
@@ -46,7 +46,7 @@ module using easy_install or pip.
 
 Once you've got those, simply type:
 
-  $ vagrant up
+    $ vagrant up
 
 In the project's home directory. The ansible provisioner goes about it's
 business bootstrapping an Ubuntu 14.04 LTS virtual machine for the project.
@@ -54,12 +54,12 @@ business bootstrapping an Ubuntu 14.04 LTS virtual machine for the project.
 You may then edit code directly on your computer in the project home directory.
 But to see changes reflected on the virtual machine you will have to:
 
-  $ vagrant ssh
-  $ sudo restart volunteerhub_Dev
+    $ vagrant ssh
+    $ sudo restart volunteerhub_Dev
 
 You could also "reprovision" the virutalbox like so:
 
-  $ vagrant provision
+    $ vagrant provision
 
 Because ansible is indempodent, nothing will be changed but what needs to be
 changed and the application will be restarted.
