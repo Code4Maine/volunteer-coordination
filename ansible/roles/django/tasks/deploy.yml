@@ -22,7 +22,7 @@
     - reqs
 
 - name: Sync Django database.
-  django_manage: command=syncdb app_path=/home/{{deployment_name}}/{{mode}}/ settings={{deployment_name}}.settings  virtualenv=/home/{{deployment_name}}/{{ mode }}/venv/
+  django_manage: command=syncdb app_path=/home/{{deployment_name}}/{{mode}}/ settings={{deployment_name}}.settings  virtualenv=/home/{{deployment_name}}/.venv-{{ mode }}/
   sudo_user: "{{deployment_name}}"
   environment: env
   tags:
@@ -30,7 +30,7 @@
     - syncdb
 
 - name: Migrate Django database.
-  django_manage: command=migrate skip=true app_path=/home/{{ deployment_name }}/{{mode}}/ settings={{ deployment_name }}.settings  virtualenv=/home/{{deployment_name}}/{{ mode }}/venv/
+  django_manage: command=migrate skip=true app_path=/home/{{ deployment_name }}/{{mode}}/ settings={{ deployment_name }}.settings  virtualenv=/home/{{deployment_name}}/.venv-{{ mode }}/
   sudo_user: "{{deployment_name}}"
   environment: env
   tags:
@@ -38,7 +38,7 @@
     - migrate
 
 - name: Run bower collection
-  django_manage: command="bower install" app_path=/home/{{ deployment_name }}/{{mode}} settings={{ deployment_name}}.settings virtualenv=/home/{{deployment_name}}/{{mode}}/venv/
+  django_manage: command="bower install" app_path=/home/{{ deployment_name }}/{{mode}} settings={{ deployment_name}}.settings virtualenv=/home/{{deployment_name}}/.venv-{{mode}}/
   sudo_user: "{{deployment_name}}"
   environment: env
   tags:
@@ -47,7 +47,7 @@
   when: bower
 
 - name: Generate Django media.
-  django_manage: command=collectstatic app_path=/home/{{ deployment_name }}/{{mode}} settings={{ deployment_name}}.settings virtualenv=/home/{{deployment_name}}/{{mode}}/venv/
+  django_manage: command=collectstatic app_path=/home/{{ deployment_name }}/{{mode}} settings={{ deployment_name}}.settings virtualenv=/home/{{deployment_name}}/.venv-{{mode}}/
   sudo_user: "{{deployment_name}}"
   environment: env
   tags:
