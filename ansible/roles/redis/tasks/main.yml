@@ -1,0 +1,5 @@
+---
+  - name: Install Redis
+    apt: pkg=redis-server state=installed update-cache=yes
+    tags:
+      - redis

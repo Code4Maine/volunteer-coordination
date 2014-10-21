@@ -1,0 +1,7 @@
+source .venv-{{mode}}/bin/activate
+export DJANGO_SETTINGS_MODULE={{ deployment_name }}.settings
+export PYTHONPATH=/home/{{deployment_name}}/{{mode}}/
+export DJANGO_SECRET_KEY="{{secret_key}}"
+export DATABASE_URL="postgres://{{deployment_name}}:{{dbpass}}@localhost/{{deployment_name}}_{{mode}}"
+export DJANGO_CONFIGURATION="{{mode}}"
+export DJANGO_DSN_VALUE="{{sentry_key}}"

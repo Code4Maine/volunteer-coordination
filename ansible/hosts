@@ -1,0 +1,8 @@
+[production]
+www.volunteerhub.me
+
+[staging]
+staging.volunteerhub.me
+
+[default]
+11.0.0.101

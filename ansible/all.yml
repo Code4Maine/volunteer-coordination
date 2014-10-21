@@ -1,0 +1,15 @@
+---
+- hosts: all
+  gather_facts: True
+  user: root
+  sudo: True
+  roles:
+    - role: common
+    - role: postgresql
+    - role: nodejs
+    - role: redis
+    - role: nginx
+    - role: django
+
+  tasks:
+    - include: roles/django/tasks/deploy.yml
