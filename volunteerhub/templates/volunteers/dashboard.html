@@ -6,8 +6,8 @@
 <div class="row">
 <div class="large-8 columns content">
 
-{% if current_organization %}
-<h2>{{current_organization.title}}</h2>
+{% if organization %}
+<h2>{{organization.title}}</h2>
 <p>Welcome! This is your dashboard. Here you'll be able to:</p>
 <ul>
     <li>Create new projects</li>
@@ -17,11 +17,11 @@
 </ul>
 {% endif %}
 
-{{current_organization.project_set.all}}
-{% manager_of current_organization user as manager %}
+{{organization.project_set.all}}
+{% manager_of organization user as manager %}
 {% if manager %}
 <h2>Applications for review</h2>
-{% for project in current_organization.projects.all %}
+{% for project in organization.projects.all %}
 {% for opp in project.opportunity_set.all %}
 {% if opp.volunteerapplication_set.all %}
 <h4>{{opp.title}} for {{opp.project.title}}</h4>
@@ -56,7 +56,7 @@
 <hr />
 {% endif %}
 
-{% if not current_organization %}
+{% if not organization %}
 
 <h2>Start your own projects!</h2>
 <p>Interested in posting opportunities for your own organization? Need volunteers
@@ -85,7 +85,7 @@ making connections!</p>
   <select id="org_picker" name="new_org">
     {% for org in user_orgs %}
     <option value="{{ org.id }}"
-        {% if org.id == current_organization %}
+        {% if org.id == organization %}
         selected="selected"
         {% endif %}>{{ org.title }}</option>
     {% endfor %}

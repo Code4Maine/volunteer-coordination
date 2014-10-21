@@ -10,4 +10,4 @@ def organization_loader(request):
     # pick it. Otherwise, don't mess with current_org
     if len(user_orgs) >= 1 and current_org is None:
         current_org = user_orgs[0]
-    return {'current_organization': current_org}
+    return {'current_organization': current_org, 'user_orgs': user_orgs}

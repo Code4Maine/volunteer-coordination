@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views.generic import DetailView, ListView, View
@@ -219,8 +219,24 @@ class DashboardView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(DashboardView, self).get_context_data(*args, **kwargs)
-        context['applications'] = VolunteerApplication.objects.filter(
-            user=self.request.user)
+        org_id = getattr(self.kwargs, 'org_id', None)
+        if org_id:
+            try:
+                organization = Organization.objects.get(manager=self.request.user,
+                                                        id=self.kwargs['org_id'])
+            except:
+                return Http404
+        try:
+            organization = Organization.objects.get(id=self.kwargs['org_id'])
+        except:
+            organization = None
+        if organization:
+            context['organization'] = organization
+            context['applications'] = VolunteerApplication.objects.filter(
+                user=self.request.user, opportunity__project__organization=organization)
+            context['projects'] = Project.objects.filter(organization=organization)
+        else:
+            return Http404
         context['org_form'] = OrganizationForm
         context['user_orgs'] = Organization.objects.filter(
             managers=self.request.user)

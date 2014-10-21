@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h2>Add a new project</h2>
-
-<form method="post">{% csrf_token %}
-  {{form.as_p}}
-  <input class="button" type="submit" value="Add">
-</form>
+<div class="row">
+    <div class="large-8 columns content">
+    
+        <h2>Add a new project</h2>
+        
+        <form method="post">{% csrf_token %}
+          {{form.as_p}}
+          <input class="button" type="submit" value="Add">
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 
