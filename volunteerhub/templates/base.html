@@ -18,6 +18,11 @@
     {% endblock foundation_css %}  
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
+    {# Override if you need another version of jQuery #}
+    {% block foundation_jquery %}
+    {% foundation_vendor "jquery" %}
+    {% endblock foundation_jquery %}
+
     
     {# Custom CSS #}
     {% block css %}{% endblock css %}
@@ -90,11 +95,6 @@
     {% block base_body %}
       {% block content %}{% endblock %}
     {% endblock %}
-
-    {# Override if you need another version of jQuery #}
-    {% block foundation_jquery %}
-    {% foundation_vendor "jquery" %}
-    {% endblock foundation_jquery %}
 
     {# Foundation JS #}
     {% block foundation_js %}

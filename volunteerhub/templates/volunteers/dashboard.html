@@ -65,8 +65,8 @@ making connections!</p>
 
 <hr />
 
-<form method="post" action="{% url 'organization-create' %}">
-    {% csrf_token %}
+<form method="post" action="{% url 'organization-create' %}">{% csrf_token %}
+    {{org_form.media}}
     {{org_form.as_p}}
     <input type="submit" class="button" value="Create" />
 </form>

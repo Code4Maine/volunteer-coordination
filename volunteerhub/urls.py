@@ -9,6 +9,7 @@ urlpatterns = patterns(
     '',
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('allauth.urls')),
+    (r'^ckeditor/', include('ckeditor.urls')),
     (r'^', include('volunteers.org_urls')),
     (r'^', include('volunteers.urls')),
 )

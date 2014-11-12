@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse
 import floppyforms as forms
 from .models import Volunteer, Project, Organization
-
+from ckeditor.widgets import CKEditorWidget
 
 class OrganizationForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Organization
 
@@ -13,6 +14,7 @@ class OrganizationForm(forms.ModelForm):
 
 class VolunteerForm(forms.ModelForm):
     email = forms.EmailField()
+    description = forms.CharField(widget=CKEditorWidget())
 
     class Meta:
         model = Volunteer
@@ -23,6 +25,7 @@ class VolunteerForm(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorWidget())
 
     class Meta:
         model = Project

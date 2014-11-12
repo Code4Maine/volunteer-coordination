@@ -25,6 +25,7 @@ install_requires = [
     'django-floppyforms==1.1.1',
     'django-zurb-foundation==5.1.1',
     'django-custom-user==0.4',
+    'django-ckeditor==4.4.6',
 ]
 
 

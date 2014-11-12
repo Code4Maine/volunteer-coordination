@@ -21,3 +21,4 @@ boto==2.9.5
 django-storages==1.1.8
 
 psycopg2==2.5
+django-ckeditor==4.4.6

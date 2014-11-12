@@ -75,10 +75,20 @@ class Common(Configuration):
         'south',
         'braces',
         'localflavor',
+        'ckeditor',
 
         'volunteers',
 
     )
+
+    CKEDITOR_UPLOAD_PATH = 'uploads/'
+    CKEDITOR_CONFIGS = {
+        'default': {
+            'toolbar': 'Basic',
+            'height': 300,
+            'width': 640,
+        },
+    }
 
     TEMPLATE_CONTEXT_PROCESSORS = Configuration.TEMPLATE_CONTEXT_PROCESSORS + \
         ("django.core.context_processors.request",
