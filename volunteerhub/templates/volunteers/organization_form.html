@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="large-8 columns content">
+    <h2>Add a new organization</h2>
+    <p>In order to create projects and post volunteer opportunities, you must be a managers
+       of at least one organization. Here we'll create a very basic organization profile and 
+       get started with finding volunteers!</p>
+    
+    <form method="post">{% csrf_token %}
+      {{form.media}}
+      {{form.as_p}}
+      <input class="button" type="submit" value="Add">
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+

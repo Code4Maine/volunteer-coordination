@@ -1,4 +1,4 @@
-.app-box { padding:1em; margin:5px; float:left; width:260px; height:200px; }
+.app-box { padding:1em; margin:5px; float:left; width:260px; height:200px; display:inline; border:1px solid #ccc;}
 .label { font-size:12pt; }
 .sidebar { margin-top:1em; }
 .content { margin-top:1em; }

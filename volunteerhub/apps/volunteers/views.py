@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views.generic import DetailView, ListView, View
@@ -7,7 +7,7 @@ from django.contrib.gis.measure import D
 from django.template.loader import render_to_string
 from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect
-from .forms import VolunteerForm, ProjectForm, OrganizationForm
+from .forms import VolunteerForm, ProjectForm, OrganizationForm, OpportunityForm
 
 from .models import (Opportunity, Project, Organization, Volunteer,
                      VolunteerApplication)
@@ -29,7 +29,7 @@ def get_nearby_opportunities(request, *args, **kwargs):
         #  TODO: Search close and go out until we find a
         #  threshold of opportunities
         meters = 5000
-        OrganizationMixin, opportunities = Opportunity.objects.filter(
+        opportunities = Opportunity.objects.filter(
             point__distance_lte=(current_point, D(m=meters)))
         if getattr(request.GET, 'json', False):
             data = serializers.serialize('json', opportunities)
@@ -45,7 +45,7 @@ def change_organization(request):
         new_org = request.POST.get('new_org')
         if new_org:
             current_organization = Organization.objects.get(id=new_org)
-            request.session['current_organization'] = str(current_organization.id)
+            request.session['current_organization'] = current_organization.id
             request.session['{0}_slug'.format(
                 'current_organization')] = current_organization.slug
             redirect_url = request.POST.get('redirect_to', '/dashboard')
@@ -54,6 +54,21 @@ def change_organization(request):
             else:
                 return redirect('/dashboard')
 
+class OrganizationMixin(View, views.LoginRequiredMixin):
+    org = None
+    user_orgs = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_orgs = Organization.objects.filter(managers=self.request.user)
+        try:
+            self.org = self.user_orgs.get(id=self.request.session.get('current_organization'))
+        except:
+            self.org = None
+
+        if not self.org and self.user_orgs:
+            self.org = self.user_orgs[0]
+        return super(OrganizationMixin, self).dispatch(request, *args, **kwargs)
+    
 
 class JsonView(views.CsrfExemptMixin,
                views.JsonRequestResponseMixin,
@@ -82,6 +97,7 @@ class ProjectDetailView(JsonView, DetailView):
 
 class ProjectCreateView(CreateView):
     model = Project
+    form_class = ProjectForm
 
 
 class ProjectListJSONView(JsonView, ListView):
@@ -97,7 +113,20 @@ class ProjectListJSONView(JsonView, ListView):
 
 class ProjectListView(JsonView, ListView):
     model = Project
-    form_class = ProjectForm
+
+
+class OpportunityCreateView(CreateView):
+    model = Opportunity
+    form_class = OpportunityForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.project = Project.objects.get(slug=self.kwargs['slug'])
+            obj.save()
+            return HttpResponseRedirect(self.success_url)
+        return super(OpportunityCreateView, self).post(request, *args, **kwargs)
 
 
 class OpportunityVolunteerView(View):
@@ -204,11 +233,19 @@ class OrganizationDetailView(DetailView):
 
 class OrganizationCreateView(CreateView):
     model = Organization
+    form_class = OrganizationForm
 
-    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            obj = form.save()
+            obj.managers.add(self.request.user)
+            obj.save()
+            return HttpResponseRedirect(self.success_url)
+        return super(OrganizationCreateView, self).post(request, *args, **kwargs)
 
 
-class DashboardView(DetailView):
+class DashboardView(OrganizationMixin, DetailView):
     ''' DashboardView
     '''
     model = Volunteer
@@ -221,9 +258,9 @@ class DashboardView(DetailView):
         context = super(DashboardView, self).get_context_data(*args, **kwargs)
         context['applications'] = VolunteerApplication.objects.filter(
             user=self.request.user)
+        context['org'] = self.org
+        context['user_orgs'] = self.user_orgs
         context['org_form'] = OrganizationForm
-        context['user_orgs'] = Organization.objects.filter(
-            managers=self.request.user)
         return context
 
 

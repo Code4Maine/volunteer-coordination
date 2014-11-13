@@ -127,8 +127,7 @@ class Opportunity(TimeStampedModel, TitleSlugDescriptionModel):
     @permalink
     def get_absolute_url(self):
         return (
-            'opportunity-detail',
-            None,
+            'opportunity-detail', None,
             {'project_slug': self.project.slug, 'slug': self.slug})
 
     def __unicode__(self):
