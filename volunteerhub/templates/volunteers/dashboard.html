@@ -6,8 +6,8 @@
 <div class="row">
 <div class="large-8 columns content">
 
-{% if current_organization %}
-<h2>{{current_organization.title}}</h2>
+{% if org %}
+<h2>{{org.title}}</h2>
 <p>Welcome! This is your dashboard. Here you'll be able to:</p>
 <ul>
     <li>Create new projects</li>
@@ -15,33 +15,40 @@
     <li>Track the status of projects</li>
     <li>Update your organization information</li>
 </ul>
-{% endif %}
-
-{{current_organization.project_set.all}}
-{% manager_of current_organization user as manager %}
-{% if manager %}
-<h2>Applications for review</h2>
-{% for project in current_organization.projects.all %}
-{% for opp in project.opportunity_set.all %}
-{% if opp.volunteerapplication_set.all %}
-<h4>{{opp.title}} for {{opp.project.title}}</h4>
-{% endif %}
-{% for app in opp.volunteerapplication_set.all %}
-{% if app.status == 'pending' %}
-<div>
-    <h4><a href="{{app.get_absolute_url}}">{{app.user}}&nbsp;<span class="label">{{app.status}}</span></h4>
-</div>
+{% else %}
+<p>Welcome! This is your dashboard. Here you'll be able to:</p>
+<ul>
+    <li>Apply for volunteer opportunities</li>
+    <li>Review or cancel your applications</li>
+</ul>
 {% endif %}
 <hr />
-{% endfor %}
-{% endfor %}
-{% endfor %}
 
+{{org.project_set.all}}
+{% manager_of org user as manager %}
+{% if manager %}
+<h2>Applications for review</h2>
+    {% for project in org.projects.all %}
+    {% for opp in project.opportunity_set.all %}
+    {% if opp.volunteerapplication_set.all %}
+    <h4>{{opp.project.title }}</h4>
+    <h5>Applications for {{opp.title}}</h5>
+    {% endif %}
+    {% for app in opp.volunteerapplication_set.all %}
+    {% if app.status == 'pending' %}
+    <div>
+        <h4><a href="{{app.get_absolute_url}}">{{app.user}}&nbsp;<span class="label ">{{app.status}}</span></h4>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+<hr />
 {% endif %}
 
 
 
-<h2>Open applications</h2>
+<h2>Your open applications</h2>
 {% if applications %}
 {% for app in applications %}
 <div class="app-box">
@@ -49,15 +56,13 @@
   <p>{{app.opportunity.project.organization}}</p>
   <a href="#" class="button disabled">Application {{app.get_status_display}}</a>
 </div>
-<hr />
 {% endfor %}
 {% else %}
 <p>No applications, <a href="{% url 'project-list' %}">find an opportunity</a>!</p>
-<hr />
 {% endif %}
+<hr />
 
-{% if not current_organization %}
-
+{% if not org %}
 <h2>Start your own projects!</h2>
 <p>Interested in posting opportunities for your own organization? Need volunteers
 for an important project you have coming up? Fill out the form below and start
@@ -65,38 +70,40 @@ making connections!</p>
 
 <hr />
 
+<p><a href="javascript:{};" onclick="$('#org-form').toggle();">Create an organization</a></p>
+<div style="display:none;" id="org-form">
 <form method="post" action="{% url 'organization-create' %}">{% csrf_token %}
     {{org_form.media}}
     {{org_form.as_p}}
     <input type="submit" class="button" value="Create" />
 </form>
+</div>
 {% endif %}
 
 </div>
 <div class="large-4 columns sidebar">
 
-{% if user_orgs|length > 2 %}
-<form name='org_picker' method='post'
-      action="{% url 'change-organization' %}">
-  {% csrf_token %}
+{% if user_orgs %}
+{% if user_orgs|length > 1 %}
+<form name='org_picker' method='post' action="{% url 'change-organization' %}">{% csrf_token %}
 
   <input type="hidden" name="redirect_to" value="{{ request.path }}" />
 
-  <select id="org_picker" name="new_org">
-    {% for org in user_orgs %}
-    <option value="{{ org.id }}"
-        {% if org.id == current_organization %}
-        selected="selected"
-        {% endif %}>{{ org.title }}</option>
+  <select id="org_picker" name="new_org" onchange="this.form.submit()">
+    {% for uorg in user_orgs %}
+    <option value="{{ uorg.id }}"
+        {% if current_organization == uorg.id %}selected{% endif %}>
+        {{ uorg.title }}
+    </option>
     {% endfor %}
   </select>
 </form>
 {% endif %}
+{% endif %}
 
 
 <h3>Your volunteer profile needs more information!</h3>
-<h2>Open projects & opportunities</h2>
-{% for org in request.user.organization_set.all %}
+<h2>Open projects</h2>
 {% manager_of org user as manager %}
 {% if manager %}
 {% for project in org.projects.all %}
@@ -114,7 +121,6 @@ making connections!</p>
 <p><a class="button" href="{% url 'project-create' org.slug %}"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Add a new project</a></p>
 <hr />
 {% endif %}
-{% endfor %}
 </div>
 </div>
 {% endblock %}

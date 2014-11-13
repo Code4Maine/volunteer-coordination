@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Add a new opportunity</h2>
+
+<form method="post">{% csrf_token %}
+  {{form.media}}
+  {{form.as_p}}
+  <input class="button" type="submit" value="Add">
+</form>
+{% endblock %}
+
+

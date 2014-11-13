@@ -9,7 +9,7 @@
 <h2>{{object}}</h2>
 <h3>Volunteer opportunities</h3>
 
-<p>{{object.description}}</p>
+<p>{{object.description|safe}}</p>
 
 {% application_status object user as status%}
 
