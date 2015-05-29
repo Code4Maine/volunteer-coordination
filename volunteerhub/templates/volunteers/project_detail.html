@@ -3,34 +3,52 @@
 
 
 {% block content %}
-<div class="row">
-<div class="large-12 columns">
-
-<h3>Project</h3>
-<h2>{{object.title}}</h2>
-<span class="label">{{object.organization}}</span>
-{% if object.organization.website %}<p class="label"><i class="fa fa-globe"></i>&nbsp;<a style="color:white;" href="{{object.organization.website}}">{{object.organization.website}}</a></p>{% endif %}
-{% if object.organization.phone %}<p class="label"><i class="fa fa-phone"></i>&nbsp;<a style="color:white;" href="tel://{{object.organization.phone}}">{{object.organization.phone}}</a></p>{% endif %}
-<div class="desc">
-  <p>{{object.description|safe}}</p>
-</div>
-
 {% manager_of object.organization request.user as manager %}
 {% lead_volunteer_of object request.user as lead %}
-{% if manager or lead %}
-<h3>Your volunteers</h3>
-{% for app in project.volunteerapplication_set.all %}
-{{app.volunteer}}
-{% endfor %}
-{% endif %}
-
-<h3>Find a way to help!</h3>
-{% for obj in object.opportunity_set.all %}
-<div class="">
-    <h4><a href="{{ obj.get_absolute_url }}">{{obj.title}}</a></h4>
-    <p>{{obj.description}}</p>
-</div>
+<div class="row">
+  <div class="large-12 columns">
+    <h3><a href="{{object.organization.get_absolute_url}}">{{object.organization}}</a> &raquo; Projects</h3>
+    <h2>{{object.title}}</h2>
+    <span class="label">{{object.organization}}</span>
+    {% if object.organization.website %}<p class="label"><i class="fa fa-globe"></i>&nbsp;<a style="color:white;" href="{{object.organization.website}}">{{object.organization.website}}</a></p>{% endif %}
+    {% if object.organization.phone %}<p class="label"><i class="fa fa-phone"></i>&nbsp;<a style="color:white;" href="tel://{{object.organization.phone}}">{{object.organization.phone}}</a></p>{% endif %}
+    <div class="desc">
+      <p>{{object.description|safe}}</p>
+    </div>
+    
+    {% if not manager  or not lead %}
+    <h4>Open opportunities</h4>
+    {% for obj in object.opportunity_set.all %}
+    <div class="opp-box">
+        <h4><a href="{{ obj.get_absolute_url }}">{{obj.title}}</a></h4>
+        <p>{{obj.description|safe}}</p>
+    </div>
     {% endfor %}
-</div>
+    <hr />
+    {% endif %}
+    
+    {% if manager or lead %}
+    <h3>Your volunteers</h3>
+    {% if project.opportunity_set.all %}
+      {% for opp in project.opportunity_set.all %}
+      <h4><a href="{{ opp.get_absolute_url }}">{{opp.title}}</a></h4>
+      {% if opp.volunteerapplication_set.all %}
+      <table>
+          <tr><th>Name</th><th>Email</th><th>Status</th><th></th></tr>
+          {% for app in opp.volunteerapplication_set.all|dictsort:"status" %}
+          <tr><td>Unknown</td><td><a href="{{app.get_absolute_url}}">{{app.user}}</td><td><span class="label alert">{{app.status}}</span></td><td><a class="label secondary" href="#" data-reveal-id="app-modal-{{app.id}}">Review</a></td></tr>
+          <div id="app-modal-{{app.id}}" class="reveal-modal small" data-reveal> <h2>Application for {{app.opportunity.title}}</h2> <p class="lead">An applicants description should go here.</p> <p>We could also put past volunteer positions, experience and hub-ranking, once we develop a way for managers to rate their volunteers.</p> <p><a href="#" class="button tiny">Approve</a>&nbsp;<a href="button tiny alert">Decline</a> <a class="close-reveal-modal"><span class="fa fa-close"></span></a> </div>
+          {% endfor %}
+      </table>
+      {% else %}
+      <p>No applicants for this opportunity, yet!</p>
+      {% endif %}
+      {% endfor %}
+    {% else %}
+    <p>You currently have no volunteer applications</p>
+    {% endif %}
+    <hr />
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
