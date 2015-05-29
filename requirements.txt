@@ -22,3 +22,4 @@ django-storages==1.1.8
 
 psycopg2==2.5
 django-ckeditor==4.4.6
+raven==5.3.1
