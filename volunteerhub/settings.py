@@ -52,7 +52,6 @@ class Common(Configuration):
 
     INSTALLED_APPS = (
         "django.contrib.admin",
-        "django.contrib.comments",
         "django.contrib.auth",
         "django.contrib.contenttypes",
         "django.contrib.redirects",
